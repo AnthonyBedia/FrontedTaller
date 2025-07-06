@@ -30,8 +30,12 @@ jobs:
         with:
           version: 8
 
-      - name: Crear override para forzar rollup@3
-        run: echo "pnpm.overrides = { rollup = '3.29.4' }" > .npmrc
+      - name: Crear override de rollup en pnpm-workspace.yaml
+        run: |
+          echo "packages:" > pnpm-workspace.yaml
+          echo "  - '.'" >> pnpm-workspace.yaml
+          echo "overrides:" >> pnpm-workspace.yaml
+          echo "  rollup: 3.29.4" >> pnpm-workspace.yaml
 
       - name: Instalar dependencias con pnpm (sin bindings nativos)
         run: pnpm install --no-optional
@@ -39,7 +43,7 @@ jobs:
       - name: Build con Vite
         run: pnpm run build
 
-      - name: Instalar cliente OIDC (para Azure)
+      - name: Instalar cliente OIDC
         run: pnpm add @actions/core@1.6.0 @actions/http-client
 
       - name: Obtener ID Token
