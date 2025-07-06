@@ -3,7 +3,7 @@ import AsociarComponentesPage from "../pages/AsociarComponentesPage";
 import { CompetenciasPage } from "../pages/CompetenciasPage";
 import Formulas from "../pages/formulas";
 import AsignarFormula from "../pages/asignarformula";
-import MainEval from "../pages/evalHome";
+import MainEval from "../pages/EvalHome";
 
 export const EvaluacionesRoutes = () => {
   const location = useLocation();
