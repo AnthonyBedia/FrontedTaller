@@ -29,7 +29,6 @@ jobs:
         run: npm ci
       
 # Agrega este paso ANTES del "Build And Deploy" en tu workflow
-
       - name: Verify Azure Token - Complete Check
         run: |
           echo "🔍 Starting Azure Static Web Apps Token Verification..."
@@ -143,15 +142,19 @@ jobs:
             echo "   Make sure your index.html is in the root or adjust app_location in the workflow"
           fi
           
-          # Verificar que el script de build existe
-          if ! npm run build --dry-run 2>/dev/null; then
-            echo "❌ ERROR: 'npm run build' script not found or invalid"
+          # Verificar que el script de build existe en package.json
+          if ! grep -q '"build"' package.json; then
+            echo "❌ ERROR: 'build' script not found in package.json"
             echo "   Please check your package.json scripts section"
             exit 1
+          else
+            echo "✅ Build script found in package.json"
+            # Mostrar el comando de build
+            BUILD_CMD=$(node -pe "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).scripts.build")
+            echo "   Build command: $BUILD_CMD"
           fi
           
           echo "✅ All configuration checks passed"
-
 
       - name: Build And Deploy
         id: builddeploy
