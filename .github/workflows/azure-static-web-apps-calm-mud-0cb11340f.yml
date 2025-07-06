@@ -28,28 +28,28 @@ jobs:
         with:
           node-version: 18
 
-      - name: Force Rollup v3 before install
-        run: npm install rollup@3 --save-dev --legacy-peer-deps
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
-      - name: Clean install (avoid native Rollup bindings)
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install --no-optional
+      - name: Install dependencies with pnpm (fix Rollup native binding bug)
+        run: pnpm install --no-optional
 
       - name: Build with Vite
-        run: npm run build
+        run: pnpm run build
 
       - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
+        run: pnpm add @actions/core@1.6.0 @actions/http-client
 
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
         with:
-           script: |
-               const coredemo = require('@actions/core')
-               return await coredemo.getIDToken()
-           result-encoding: string
+          script: |
+              const coredemo = require('@actions/core')
+              return await coredemo.getIDToken()
+          result-encoding: string
 
       - name: Build And Deploy
         id: builddeploy
@@ -59,7 +59,7 @@ jobs:
           action: "upload"
           app_location: "/" 
           api_location: ""  
-          output_location: "dist" # output por defecto de Vite
+          output_location: "dist" # output de Vite
           github_id_token: ${{ steps.idtoken.outputs.result }}
 
   close_pull_request_job:
