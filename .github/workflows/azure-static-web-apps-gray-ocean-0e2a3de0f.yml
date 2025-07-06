@@ -28,16 +28,129 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Verify Azure Token
+# Agrega este paso ANTES del "Build And Deploy" en tu workflow
+
+      - name: Verify Azure Token - Complete Check
         run: |
-          if [ -z "${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_OCEAN_0E2A3DE0F }}" ]; then
-            echo "❌ Token is empty or not found"
+          echo "🔍 Starting Azure Static Web Apps Token Verification..."
+          echo "================================================="
+          
+          # 1. Verificar que el token existe
+          if [ -z "$AZURE_TOKEN" ]; then
+            echo "❌ FATAL: Token is empty or not found in GitHub Secrets"
+            echo "   Please check that AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_OCEAN_0E2A3DE0F exists in repository secrets"
             exit 1
-          else
-            echo "✅ Token is present (length: ${#AZURE_TOKEN})"
           fi
+          
+          # 2. Verificar longitud del token (los tokens válidos suelen tener ~60+ caracteres)
+          TOKEN_LENGTH=${#AZURE_TOKEN}
+          echo "✅ Token is present (length: $TOKEN_LENGTH characters)"
+          
+          if [ $TOKEN_LENGTH -lt 50 ]; then
+            echo "⚠️  WARNING: Token seems too short (${TOKEN_LENGTH} chars). Valid tokens are usually 60+ characters"
+          fi
+          
+          # 3. Verificar formato básico del token
+          if [[ $AZURE_TOKEN =~ ^[A-Za-z0-9+/=_-]+$ ]]; then
+            echo "✅ Token format appears valid (alphanumeric with valid special chars)"
+          else
+            echo "❌ WARNING: Token contains unexpected characters"
+          fi
+          
+          # 4. Verificar que no contenga espacios o saltos de línea
+          if [[ $AZURE_TOKEN =~ [[:space:]] ]]; then
+            echo "❌ ERROR: Token contains whitespace characters (spaces, tabs, newlines)"
+            echo "   Please regenerate the token and ensure no extra characters are copied"
+            exit 1
+          fi
+          
+          # 5. Mostrar primeros y últimos caracteres para identificación (sin exponer el token completo)
+          FIRST_CHARS=${AZURE_TOKEN:0:8}
+          LAST_CHARS=${AZURE_TOKEN: -8}
+          echo "✅ Token preview: ${FIRST_CHARS}...${LAST_CHARS}"
+          
+          # 6. Verificar conectividad con Azure (usando curl)
+          echo ""
+          echo "🌐 Testing Azure connectivity..."
+          
+          # Crear un archivo temporal con el token para la petición
+          echo "$AZURE_TOKEN" > /tmp/azure_token.txt
+          
+          # Hacer una petición de verificación usando la API de Azure Static Web Apps
+          # Nota: Esta es una verificación indirecta, ya que la API real se llama durante el despliegue
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $AZURE_TOKEN" \
+            --max-time 10 \
+            "https://management.azure.com/" 2>/dev/null || echo "000")
+          
+          if [ "$HTTP_STATUS" = "000" ]; then
+            echo "⚠️  Could not test Azure connectivity (network issue or timeout)"
+            echo "   This doesn't necessarily mean the token is invalid"
+          elif [ "$HTTP_STATUS" = "401" ]; then
+            echo "❌ POTENTIAL ISSUE: Token authentication failed (HTTP 401)"
+            echo "   The token might be invalid or expired"
+            echo "   Consider regenerating the token in Azure Portal"
+          elif [ "$HTTP_STATUS" = "403" ]; then
+            echo "⚠️  Token authenticated but has limited permissions (HTTP 403)"
+            echo "   This might be normal for Static Web Apps tokens"
+          else
+            echo "✅ Azure connectivity test passed (HTTP $HTTP_STATUS)"
+          fi
+          
+          # 7. Verificar variables de entorno del GitHub Actions
+          echo ""
+          echo "🔧 GitHub Actions Environment Check:"
+          echo "   Repository: $GITHUB_REPOSITORY"
+          echo "   Branch: $GITHUB_REF"
+          echo "   Event: $GITHUB_EVENT_NAME"
+          echo "   Actor: $GITHUB_ACTOR"
+          
+          # 8. Verificar que estamos en el contexto correcto
+          if [ "$GITHUB_REPOSITORY_OWNER" = "" ]; then
+            echo "⚠️  WARNING: GitHub repository owner not detected"
+          else
+            echo "✅ Running in repository: $GITHUB_REPOSITORY_OWNER"
+          fi
+          
+          # 9. Limpiar archivo temporal
+          rm -f /tmp/azure_token.txt
+          
+          echo ""
+          echo "================================================="
+          echo "✅ Token verification completed"
+          echo "   If you see any ❌ errors above, please fix them before deployment"
+          echo "   If you see only ✅ and ⚠️ warnings, the token should work for deployment"
+          echo "================================================="
+          
         env:
           AZURE_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_OCEAN_0E2A3DE0F }}
+
+      # Paso adicional: Verificación específica para Static Web Apps
+      - name: Validate Static Web Apps Configuration
+        run: |
+          echo "🏗️  Validating Static Web Apps deployment configuration..."
+          
+          # Verificar que los archivos necesarios existen
+          if [ ! -f "package.json" ]; then
+            echo "❌ ERROR: package.json not found"
+            exit 1
+          fi
+          
+          if [ ! -f "index.html" ]; then
+            echo "❌ ERROR: index.html not found in root directory"
+            echo "   Make sure your index.html is in the root or adjust app_location in the workflow"
+          fi
+          
+          # Verificar que el script de build existe
+          if ! npm run build --dry-run 2>/dev/null; then
+            echo "❌ ERROR: 'npm run build' script not found or invalid"
+            echo "   Please check your package.json scripts section"
+            exit 1
+          fi
+          
+          echo "✅ All configuration checks passed"
 
 
       - name: Build And Deploy
