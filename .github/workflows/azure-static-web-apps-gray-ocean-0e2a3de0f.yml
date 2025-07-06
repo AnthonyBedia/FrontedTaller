@@ -19,16 +19,6 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-      
-      - name: Clean install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install
       
       - name: Build And Deploy
         id: builddeploy
@@ -40,7 +30,7 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: "dist"
-          skip_app_build: true
+          app_build_command: "npm install && npm run build"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
