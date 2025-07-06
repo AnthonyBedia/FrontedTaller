@@ -1,0 +1,72 @@
+.container {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo label {
+  font-weight: 500;
+  color: #333;
+}
+
+.campo input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #1a237e;
+  box-shadow: 0 0 0 2px #1a237e;
+}
+
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancelar {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  color: #666;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cancelar:hover {
+  background: #f5f5f5;
+}
+
+.guardar {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #1a237e;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.guardar:hover {
+  background: #1a237e;
+}

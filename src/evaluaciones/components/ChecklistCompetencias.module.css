@@ -1,0 +1,69 @@
+.container {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 36px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 340px;
+  max-width: 400px;
+  width: 100%;
+}
+h4 {
+  margin-bottom: 18px;
+  font-size: 1.18rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+.lista {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 22px;
+  width: 100%;
+}
+.lista li {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #1a237e;
+  transform: scale(1.15);
+}
+.buttonGroup {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+.cancelar {
+  background: #fff;
+  color: #1a237e;
+  border: 1px solid #1a237e;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.cancelar:hover {
+  background: #e3e3e3;
+}
+.guardar {
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.guardar:hover {
+  background: #1a237e;
+}
