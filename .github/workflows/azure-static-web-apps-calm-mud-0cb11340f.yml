@@ -14,65 +14,42 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    permissions:
-       id-token: write
-       contents: read
     steps:
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+      
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Crear override de rollup en pnpm-workspace.yaml
-        run: |
-          echo "packages:" > pnpm-workspace.yaml
-          echo "  - '.'" >> pnpm-workspace.yaml
-          echo "overrides:" >> pnpm-workspace.yaml
-          echo "  rollup: 3.29.4" >> pnpm-workspace.yaml
-
-      - name: Instalar dependencias con pnpm (sin bindings nativos)
-        run: pnpm install --no-optional
-
-      - name: Build con Vite
-        run: pnpm run build
-
-      - name: Instalar cliente OIDC
-        run: pnpm add @actions/core@1.6.0 @actions/http-client
-
-      - name: Obtener ID Token
-        uses: actions/github-script@v6
-        id: idtoken
-        with:
-          script: |
-            const coredemo = require('@actions/core')
-            return await coredemo.getIDToken()
-          result-encoding: string
-
-      - name: Deploy a Azure Static Web Apps
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CALM_MUD_0CB11340F }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/" 
-          api_location: ""  
-          output_location: "dist"
-          github_id_token: ${{ steps.idtoken.outputs.result }}
+          ###### Repository/Build Configurations ######
+          app_location: "/" # App source code path
+          api_location: "" # Api source code path - optional
+          output_location: "dist" # Built app content directory for Vite
+          ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
-      - name: Cerrar PR
+      - name: Close Pull Request
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CALM_MUD_0CB11340F }}
           action: "close"
