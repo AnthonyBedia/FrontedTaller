@@ -1,74 +1,105 @@
 import React from 'react';
-import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormGroup,
+    FormControlLabel,
+    Checkbox,
+    Grid
+} from '@mui/material';
 
-const AddFormula = ({ show, handleClose, handleSave, newformula, handleChange, handleCheckboxChange, applicables, funcionesDisponibles }) => {
+const AddFormula = ({
+    show,
+    handleClose,
+    handleSave,
+    newformula,
+    handleChange,
+    handleCheckboxChange,
+    applicables,
+    funcionesDisponibles
+}) => {
     return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Añadir nueva fórmula</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form>
-                    <Form.Group controlId="formCode">
-                        <Form.Label>Código</Form.Label>
-                        <Form.Control
-                            type="text"
+        <Dialog open={show} onClose={handleClose} fullWidth maxWidth="sm">
+            <DialogTitle>Añadir nueva fórmula</DialogTitle>
+            <DialogContent dividers>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Código"
                             name="codigo"
                             value={newformula.codigo}
                             onChange={handleChange}
+                            fullWidth
                         />
-                    </Form.Group>
-                    <Form.Group controlId="formDesc">
-                        <Form.Label>Insertar descripción</Form.Label>
-                        <Form.Control
-                            type="text"
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Insertar descripción"
                             name="descripcion"
                             value={newformula.descripcion}
                             onChange={handleChange}
+                            fullWidth
                         />
-                    </Form.Group>
-                    <Form.Group controlId="formFuncionId">
-                        <Form.Label>Seleccionar función</Form.Label>
-                        <Form.Select
-                            name="funcionId"
-                            value={newformula.funcionId}
-                            onChange={handleChange}
-                        >
-                            <option value="">-- Seleccione una función --</option>
-                            {funcionesDisponibles.map(func => (
-                                <option key={func.id} value={func.id}>
-                                    {func.nombre}
-                                </option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Criterios adicionales</Form.Label>
-                        <Row>
-                            {applicables.map((label, index) => (
-                                <Col key={index} md={6}>
-                                    <Form.Check
-                                        type="checkbox"
-                                        label={label}
-                                        checked={newformula.applicable[index] === 1}
-                                        onChange={() => handleCheckboxChange(index)}
-                                        className="mb-2"
-                                    />
-                                </Col>
-                            ))}
-                        </Row>
-                    </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel id="funcion-select-label">Seleccionar función</InputLabel>
+                            <Select
+                                labelId="funcion-select-label"
+                                name="funcionId"
+                                value={newformula.funcionId}
+                                label="Seleccionar función"
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">
+                                    <em>-- Seleccione una función --</em>
+                                </MenuItem>
+                                {funcionesDisponibles.map((func) => (
+                                    <MenuItem key={func.id} value={func.id}>
+                                        {func.nombre}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormGroup>
+                            <Grid container spacing={1}>
+                                {applicables.map((label, index) => (
+                                    <Grid item xs={12} sm={6} key={index}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={newformula.applicable[index] === 1}
+                                                    onChange={() => handleCheckboxChange(index)}
+                                                />
+                                            }
+                                            label={label}
+                                        />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </FormGroup>
+                    </Grid>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} variant="outlined" color="secondary">
                     Cancelar
                 </Button>
-                <Button variant="primary" onClick={handleSave}>
+                <Button onClick={handleSave} variant="contained" color="primary">
                     Guardar
                 </Button>
-            </Modal.Footer>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 };
 

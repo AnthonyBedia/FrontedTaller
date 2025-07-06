@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { competenciaService } from "../services/competenciaService";
-import { componenteService } from "../services/componenteService";
+import { competenciaService } from "../../../services/competenciaService";
+import { componenteService } from "../../../services/componenteService";
 
 export const CompetenciasPage = () => {
   const dispatch = useDispatch();

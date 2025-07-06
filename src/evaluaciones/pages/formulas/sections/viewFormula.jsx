@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Typography,
+    Divider,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormGroup,
+    FormControlLabel,
+    Checkbox
+} from "@mui/material";
 import { useDispatch } from "react-redux";
-import { updateFormula} from "../../../actions/evalThunks";
+import { useNavigate, useLocation } from "react-router-dom";
+import { updateFormula } from "../../../actions/evalThunks";
 
 const applicableLabels = [
     "Usa Pesos",
@@ -17,18 +32,19 @@ const applicableLabels = [
 ];
 
 export default function FormulaViewer({ show, handleClose, formula, funciones }) {
-    const navigate= useNavigate();
-    const location= useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const dispatch = useDispatch();
+
     const [isEditing, setIsEditing] = useState(false);
     const [editableFormula, setEditableFormula] = useState(null);
-    const [funcion, setFuncion]= useState(1);
-    const dispatch= useDispatch();
+    const [funcion, setFuncion] = useState(1);
 
     useEffect(() => {
-        if (formula){
+        if (formula) {
             setEditableFormula(formula);
             setIsEditing(false);
-            setFuncion(formula.funcionId || 1)
+            setFuncion(formula.funcionId || 1);
         }
     }, [formula]);
 
@@ -87,60 +103,82 @@ export default function FormulaViewer({ show, handleClose, formula, funciones })
     ];
 
     return (
-        <Modal show={show} onHide={handleClose} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>{isEditing ? "Editar fórmula" : "Detalle de la fórmula"}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p><strong>Código:</strong> {editableFormula.codigo}</p>
-                <p><strong>Descripción:</strong> {editableFormula.descripcion}</p>
-                <p><strong>Estado:</strong> {
-                    editableFormula.estado === "1" ? "Activo" :
-                    editableFormula.estado === "2" ? "Suspendido" :
-                    editableFormula.estado
-                }</p>
-                <hr />
-                    <p><strong>ID de la Institución:</strong> {editableFormula.institucionId}</p>
-                    <p><strong>ID del departamento:</strong> {editableFormula.departamentoId}</p>
-                    <p><strong>ID del instituto:</strong> {editableFormula.institutoid}</p>
-                <hr />
-                <Form>
-                    <Form.Label><strong>Función asociada: </strong></Form.Label>
-                        <Form.Select 
-                            value={funcion}
-                            onChange={handleFuncionChange}
-                            disabled={!isEditing}
-                        >
-                            {funciones.map((fu)=>(
-                                <option key={fu.id} value={fu.id}>{fu.nombre}</option>
-                            ))}
-                        </Form.Select>
-                    <Form.Label><strong>Aplicabilidad: </strong></Form.Label>
+        <Dialog open={show} onClose={handleClose} fullWidth maxWidth="sm">
+            <DialogTitle>
+                {isEditing ? "Editar fórmula" : "Detalle de la fórmula"}
+            </DialogTitle>
+            <DialogContent dividers>
+                <Typography variant="body1"><strong>Código:</strong> {editableFormula.codigo}</Typography>
+                <Typography variant="body1"><strong>Descripción:</strong> {editableFormula.descripcion}</Typography>
+                <Typography variant="body1">
+                    <strong>Estado:</strong>{" "}
+                    {editableFormula.estado === "1"
+                        ? "Activo"
+                        : editableFormula.estado === "2"
+                        ? "Suspendido"
+                        : editableFormula.estado}
+                </Typography>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Typography variant="body2"><strong>ID de la Institución:</strong> {editableFormula.institucionId}</Typography>
+                <Typography variant="body2"><strong>ID del Departamento:</strong> {editableFormula.departamentoId}</Typography>
+                <Typography variant="body2"><strong>ID del Instituto:</strong> {editableFormula.institutoid}</Typography>
+
+                <Divider sx={{ my: 2 }} />
+
+                <FormControl fullWidth sx={{ my: 2 }} disabled={!isEditing}>
+                    <InputLabel id="funcion-select-label">Función asociada</InputLabel>
+                    <Select
+                        labelId="funcion-select-label"
+                        value={funcion}
+                        onChange={handleFuncionChange}
+                        label="Función asociada"
+                    >
+                        {funciones.map((fu) => (
+                            <MenuItem key={fu.id} value={fu.id}>{fu.nombre}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <Typography variant="subtitle1" sx={{ mt: 2 }}><strong>Aplicabilidad:</strong></Typography>
+                <FormGroup>
                     {applicableLabels.map((label, idx) => (
-                        <Form.Check
+                        <FormControlLabel
                             key={idx}
-                            type="checkbox"
+                            control={
+                                <Checkbox
+                                    checked={applicableValues[idx] === 1}
+                                    onChange={() => handleCheckboxChange(idx)}
+                                    disabled={!isEditing}
+                                />
+                            }
                             label={label}
-                            checked={applicableValues[idx] === 1}
-                            disabled={!isEditing}
-                            onChange={() => handleCheckboxChange(idx)}
                         />
                     ))}
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
+                </FormGroup>
+            </DialogContent>
+            <DialogActions>
                 {isEditing ? (
                     <>
-                        <Button variant="primary" onClick={handleSave}>Guardar cambios</Button>
-                        <Button variant="secondary" onClick={cancelEdit}>Cancelar</Button>
+                        <Button variant="contained" color="primary" onClick={handleSave}>
+                            Guardar cambios
+                        </Button>
+                        <Button variant="outlined" color="secondary" onClick={cancelEdit}>
+                            Cancelar
+                        </Button>
                     </>
                 ) : (
                     <>
-                        <Button variant="warning" onClick={toggleEdit}>Editar</Button>
-                        <Button variant="outline-secondary" onClick={handleClose}>Cerrar</Button>
+                        <Button variant="contained" color="warning" onClick={toggleEdit}>
+                            Editar
+                        </Button>
+                        <Button variant="outlined" onClick={handleClose}>
+                            Cerrar
+                        </Button>
                     </>
                 )}
-            </Modal.Footer>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 }

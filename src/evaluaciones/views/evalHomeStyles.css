@@ -1,0 +1,19 @@
+.formula-general-container{
+    background-color: #F2F8FF;
+    margin-left: 10px;
+    border-radius: 15px;
+}
+
+.formula-cards{
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.rubrica-cards{
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}

@@ -1,10 +1,15 @@
 import { useDispatch } from 'react-redux';
 import { login } from '../slices';
 import { useNavigate } from 'react-router-dom';
+import { obtenerToken } from "../../api/evaluacionesApi";
 
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const evaltoken= async()=>{
+    const token = await obtenerToken({username:"test@correo.com"});
+  }
 
   const handleLogin = () => {
     dispatch(login({
@@ -15,6 +20,7 @@ export const LoginPage = () => {
     }));
 
     // Redirige manualmente
+    evaltoken()
     navigate('/cursos/resumen');
   };
 
