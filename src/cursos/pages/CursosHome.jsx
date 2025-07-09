@@ -20,6 +20,7 @@ export const CursosHome = ( {vista} ) => {
     return (
         <main>
             <button onClick={()=> navigate("/evaluaciones/")}>Ir a evaluaciones</button>
+            <button onClick={()=> navigate("/docentes/")}>Ir a docentes</button>
             <CursosLayout>
                 { contenido }
             </CursosLayout>

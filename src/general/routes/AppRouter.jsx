@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { AuthRoutes } from '../../seguridad/routes/AuthRoutes'
 import { CursosRoutes } from '../../cursos/routes/CursosRoutes'
 import { EvaluacionesRoutes } from "../../evaluaciones/routes/EvaluacionesRoutes";
+import { DocenteRoutes } from '../../docentes/routes/DocenteRoutes';
 
 import { CheckingAuth } from '../../seguridad/components';
 import { useCheckAuth } from '../../seguridad/hooks';
@@ -23,6 +24,7 @@ export const AppRouter = () => {
            <>
             <Route path="/cursos/*" element={ <CursosRoutes /> } />
             <Route path="/evaluaciones/*" element={<EvaluacionesRoutes />} />
+            <Route path="/docentes/*" element={<DocenteRoutes />} />
            </>
             : <Route path="/auth/*" element={ <AuthRoutes /> } />
         }
