@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { authSlice } from '../../seguridad/slices';
 import { cursoSlice } from '../../cursos/slices';
+import { docenteCursoSlice } from '../../docentes/slices/cursoSlice';
 import {formulaSlice, funcionSlice, rubricaSlice} from '../../evaluaciones/slices';
 
 export const store = configureStore({
@@ -10,5 +11,6 @@ export const store = configureStore({
     formula: formulaSlice.reducer,
     funcion: funcionSlice.reducer,
     rubrica: rubricaSlice.reducer,
+    docenteCurso: docenteCursoSlice.reducer,
   },
 });
