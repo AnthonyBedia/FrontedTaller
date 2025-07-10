@@ -40,6 +40,11 @@ export const alumnoService = {
         return data;
     },
 
+    buscarAlumnoPorCodigo: async (codigo) => {
+        const { data } = await axios.get(`${baseUrl}api/alumnos/codigo/${codigo}`);
+        return data;
+    },
+
     // Verificar si un alumno está en un curso
     verificarAlumnoEnCurso: async (alumnocursoId, cursoId) => {
         const { data } = await axios.get(`${baseUrl}api/alumnos/in-curso/${alumnocursoId}/${cursoId}`);

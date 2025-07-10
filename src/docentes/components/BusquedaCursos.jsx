@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { grupoService } from '../services/grupoService';
+import { cursoService } from '../services/cursoService';
 import { setCursoSeleccionado, setBusqueda } from '../slices/cursoSlice';
 
 const BusquedaCursos = ({ 
@@ -20,7 +21,7 @@ const BusquedaCursos = ({
                 try {
                     setCargando(true);
                     console.log('Buscando cursos con:', busqueda);
-                    const response = await grupoService.buscarCursos(busqueda);
+                    const response = await cursoService.buscarPorNombre(busqueda);
                     console.log('Respuesta del servidor:', response);
                     
                     if (Array.isArray(response)) {
