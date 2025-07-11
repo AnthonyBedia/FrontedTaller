@@ -4,33 +4,22 @@ import { AlumnoLayout } from '../layout/AlumnoLayout';
 import { AlumnoDashboard } from '../pages/AlumnoDashboard';
 import { Calificaciones } from '../pages/Calificaciones';
 import { MisCursos } from '../pages/MisCursos';
-
-
 import { Registro } from '../pages/Registro';
-
 
 export const AlumnoRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginAlumno />} />
-      
-      {/* Rutas protegidas con layout */}
+      <Route path="/registro" element={<Registro />} />
+
       <Route path="/" element={<AlumnoLayout />}>
+        <Route index element={<Navigate to="/dashboard" />} />
         <Route path="dashboard" element={<AlumnoDashboard />} />
-        <Route path="" element={<Navigate to="/alumno/dashboard" />} />
-
-        <Route path="Calificaciones" element={<Calificaciones />} />
-        <Route path="" element={<Navigate to="/alumno/Calificaciones" />} />
-
-        <Route path="MisCursos" element={<MisCursos />} />
-        <Route path="" element={<Navigate to="/alumno/MisCursos" />} />
+        <Route path="calificaciones" element={<Calificaciones />} />
+        <Route path="miscursos" element={<MisCursos />} />
       </Route>
 
-      
-        <Route path="Registro" element={<Registro />} />
-        <Route path="" element={<Navigate to="/alumno/Registro" />} />
-      {/* Ruta por defecto */}
-      <Route path="*" element={<Navigate to="/alumno/login" />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 };
