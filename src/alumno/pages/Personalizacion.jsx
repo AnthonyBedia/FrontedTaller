@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { useTheme } from '@mui/material/styles';
-
-
 import { useOutletContext } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import {
   Box,
@@ -23,45 +21,107 @@ import {
 } from '@mui/material';
 import './PersonalizacionModel.css';
 
-
 export const Personalizacion = () => {
-
-  const { setTema } = useOutletContext();
-  
-  const theme = useTheme();
-
   const navigate = useNavigate();
+  const theme = useTheme();
+  
+  // Verificar si useOutletContext está disponible
+  let setTema;
+  try {
+    const context = useOutletContext();
+    setTema = context?.setTema;
+  } catch (error) {
+    console.warn('useOutletContext no disponible:', error);
+    setTema = () => {}; // función vacía como fallback
+  }
 
-  /*const [tema, setTemaLocal] = useState('claro');*/
+  // Obtener datos del usuario desde cookies (igual que en Calificaciones)
+  const cookieUser = Cookies.get('user');
+  const userData = cookieUser ? JSON.parse(cookieUser) : null;
+
+  // Estados con valores por defecto más seguros
   const [tema, setTemaLocal] = useState(() => {
-  const preferencias = JSON.parse(localStorage.getItem('preferencias'));
-  return preferencias?.tema_visualizacion || 'claro';
+    try {
+      const preferencias = JSON.parse(localStorage.getItem('preferencias'));
+      return preferencias?.tema_visualizacion || 'claro';
+    } catch (error) {
+      console.warn('Error al leer preferencias:', error);
+      return 'claro';
+    }
   });
+
   const [tamanioFuente, setTamanioFuente] = useState(() => {
-    const prefs = JSON.parse(localStorage.getItem('preferencias')) || {};
-    return prefs.tamanio_fuente || 'mediano';
+    try {
+      const prefs = JSON.parse(localStorage.getItem('preferencias')) || {};
+      return prefs.tamanio_fuente || 'mediano';
+    } catch (error) {
+      return 'mediano';
+    }
   });
+
   const [tipoFuente, setTipoFuente] = useState(() => {
-    const prefs = JSON.parse(localStorage.getItem('preferencias')) || {};
-    return prefs.tipo_fuente || 'serif';
+    try {
+      const prefs = JSON.parse(localStorage.getItem('preferencias')) || {};
+      return prefs.tipo_fuente || 'serif';
+    } catch (error) {
+      return 'serif';
+    }
   });
+
   const [mostrarCodigoCurso, setMostrarCodigoCurso] = useState(true);
   const [mostrarNombreDocente, setMostrarNombreDocente] = useState(true);
   const [mostrarIdCurso, setMostrarIdCurso] = useState(true);
   const [seccionInicio, setSeccionInicio] = useState('dashboard');
+  const [loading, setLoading] = useState(false);
 
+  // Cargar preferencias al montar el componente
   useEffect(() => {
-    const preferencias = JSON.parse(localStorage.getItem('preferencias')) || {};
-    preferencias.tipo_fuente = tipoFuente;
-    preferencias.tamanio_fuente = tamanioFuente;
-    localStorage.setItem('preferencias', JSON.stringify(preferencias));
+    const cargarPreferencias = async () => {
+      if (!userData?.id) return;
 
-    document.body.style.fontFamily = obtenerFuente(tipoFuente);
-    document.body.style.fontSize = obtenerTamanio(tamanioFuente);
+      try {
+        const response = await fetch(`http://localhost:8080/api-alumno/v1/personalizacion/${userData.id}`);
+        if (response.ok) {
+          const preferencias = await response.json();
+          setTemaLocal(preferencias.tema_visualizacion || 'claro');
+          setTamanioFuente(preferencias.tamanio_fuente || 'mediano');
+          setTipoFuente(preferencias.tipo_fuente || 'serif');
+          setMostrarCodigoCurso(preferencias.mostrar_codigo_curso ?? true);
+          setMostrarNombreDocente(preferencias.mostrar_docente_curso ?? true);
+          setMostrarIdCurso(preferencias.mostrar_id_curso ?? true);
+          setSeccionInicio(preferencias.seccion_inicio || 'dashboard');
+        }
+      } catch (error) {
+        console.error('Error al cargar preferencias:', error);
+      }
+    };
+
+    cargarPreferencias();
+  }, [userData?.id]);
+
+  // Aplicar estilos de fuente
+  useEffect(() => {
+    try {
+      const preferencias = JSON.parse(localStorage.getItem('preferencias')) || {};
+      preferencias.tipo_fuente = tipoFuente;
+      preferencias.tamanio_fuente = tamanioFuente;
+      localStorage.setItem('preferencias', JSON.stringify(preferencias));
+
+      document.body.style.fontFamily = obtenerFuente(tipoFuente);
+      document.body.style.fontSize = obtenerTamanio(tamanioFuente);
+    } catch (error) {
+      console.error('Error al aplicar estilos de fuente:', error);
+    }
   }, [tipoFuente, tamanioFuente]);
 
+  const handleGuardar = async () => {
+    if (!userData?.id) {
+      alert('No se pudo obtener la información del usuario');
+      return;
+    }
 
-  const handleGuardar = () => {
+    setLoading(true);
+    
     const preferencias = {
       tema_visualizacion: tema,
       tamanio_fuente: tamanioFuente,
@@ -72,38 +132,46 @@ export const Personalizacion = () => {
       seccion_inicio: seccionInicio,
     };
 
-    const userId = JSON.parse(localStorage.getItem('user')).id;
-
-    fetch(`http://localhost:8080/api-alumno/v1/personalizacion/${userId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(preferencias),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Error al guardar preferencias');
-        return res.json();
-      })
-      .then((data) => {
-        alert('Preferencias guardadas correctamente');
-        localStorage.setItem('preferencias', JSON.stringify(data));
-      })
-      .catch((err) => {
-        console.error(err);
-        alert('Hubo un error al guardar tus preferencias.');
+    try {
+      const response = await fetch(`http://localhost:8080/api-alumno/v1/personalizacion/${userData.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(preferencias),
       });
+
+      if (!response.ok) {
+        throw new Error('Error al guardar preferencias');
+      }
+
+      const data = await response.json();
+      alert('Preferencias guardadas correctamente');
+      localStorage.setItem('preferencias', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error al guardar preferencias:', error);
+      alert('Hubo un error al guardar tus preferencias.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-
   const handleTemaChange = (e) => {
-  const nuevoTema = e.target.value;
-  setTemaLocal(nuevoTema);
-  setTema(nuevoTema);
+    const nuevoTema = e.target.value;
+    setTemaLocal(nuevoTema);
+    
+    // Solo llamar setTema si está disponible
+    if (setTema) {
+      setTema(nuevoTema);
+    }
 
-  const preferencias = JSON.parse(localStorage.getItem('preferencias')) || {};
-  preferencias.tema_visualizacion = nuevoTema;
-  localStorage.setItem('preferencias', JSON.stringify(preferencias));
+    try {
+      const preferencias = JSON.parse(localStorage.getItem('preferencias')) || {};
+      preferencias.tema_visualizacion = nuevoTema;
+      localStorage.setItem('preferencias', JSON.stringify(preferencias));
+    } catch (error) {
+      console.error('Error al guardar tema:', error);
+    }
   };
 
   const obtenerFuente = (tipo) => {
@@ -124,16 +192,29 @@ export const Personalizacion = () => {
     }
   };
 
-
+  // Mostrar mensaje si no hay usuario
+  if (!userData) {
+    return (
+      <div className="page-container">
+        <div className="page-header">
+          <button onClick={() => navigate('../dashboard')} className="back-btn">
+            ← Volver al Dashboard
+          </button>
+          <h1>Personalización</h1>
+        </div>
+        <p style={{ padding: '2rem' }}>No se pudo cargar la información del usuario.</p>
+      </div>
+    );
+  }
 
   return (
     <Box className="contenedor-personalizacion"
-    sx={{
-      backgroundColor: theme.palette.background.default,
-    }}>
-      <button onClick={() => navigate('/alumno/dashboard')} className="back-btn">
-          ← Volver al Dashboard
-        </button>
+      sx={{
+        backgroundColor: theme.palette.background.default,
+      }}>
+      <button onClick={() => navigate('../dashboard')} className="back-btn">
+        ← Volver al Dashboard
+      </button>
       <Typography variant="h5" gutterBottom>
         Personalización del Usuario
       </Typography>
@@ -238,14 +319,24 @@ export const Personalizacion = () => {
       </Grid>
 
       <Box className="botones-accion">
-        <Button variant="contained" color="primary" onClick={handleGuardar}>Guardar</Button>
-        <Button variant="outlined" color="error">Cancelar</Button>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleGuardar}
+          disabled={loading}
+        >
+          {loading ? 'Guardando...' : 'Guardar'}
+        </Button>
+        <Button 
+          variant="outlined" 
+          color="error"
+          onClick={() => navigate('../dashboard')}
+        >
+          Cancelar
+        </Button>
       </Box>
     </Box>
   );
-
-
 };
-
 
 export default Personalizacion;
