@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
     Typography,
     Button,
@@ -10,66 +9,67 @@ import {
     TableBody,
     TableContainer,
     Paper,
-    Box
+    Box,
+    TextField
 } from "@mui/material";
 import AddComponente from "./addComponente";
 import ComponenteViewer from "./viewComponente";
 
 export default function GrupoComponentes() {
     const [componentes, setComponentes] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedComponente, setSelectedComponente] = useState(null);
+    const [search, setSearch] = useState(""); // Nuevo estado para búsqueda
 
-    const [newComponente, setNewComponente] = useState({
-        codigo: "",
-        nombre: "",
-        evaluacionid: "",
-        peso: "",
-        orden: "",
-        estado: "",
-        padreid: "",
-        nivel: "",
-        institucionalid: "",
-        calculado: "",
-        departamentoid: "",
-        formulaid: "",
-        curso_id: ""
-    });
 
     useEffect(() => {
         fetchComponentes();
     }, []);
 
     const fetchComponentes = () => {
-        axios.get("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente")
-            .then(res => setComponentes(res.data))
-            .catch(err => console.error("Error al obtener componentes:", err));
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setNewComponente(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSave = () => {
-        axios.post("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente", newComponente)
-            .then(() => {
-                setShowAddModal(false);
-                setNewComponente({
-                    codigo: "", nombre: "", evaluacionid: "", peso: "", orden: "",
-                    estado: "", padreid: "", nivel: "", institucionalid: "", calculado: "",
-                    departamentoid: "", formulaid: "", curso_id: ""
-                });
-                fetchComponentes();
+        setIsLoading(true);
+        const token = localStorage.getItem("token");
+        fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
             })
-            .catch(err => console.error("Error al guardar el componente:", err));
+            .then(data => {
+                console.log("Datos recibidos:", data);
+                setComponentes(Array.isArray(data) ? data : []);
+            })
+            .catch(err => {
+                console.error("Error al obtener componentes:", err);
+                setComponentes([]);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
+    const handleComponenteAdded = (newComponente) => {
+        // Agregar el nuevo componente a la lista
+        setComponentes(prev => [...prev, newComponente]);
     };
 
     const openViewer = (comp) => {
         setSelectedComponente(comp);
         setShowViewModal(true);
     };
+
+    // Filtrar componentes por búsqueda
+    const componentesFiltrados = componentes.filter(comp =>
+        comp.descripcion && comp.descripcion.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <Box sx={{ p: 4 }}>
@@ -86,34 +86,56 @@ export default function GrupoComponentes() {
                 Añadir Componente
             </Button>
 
+            <Box sx={{ mb: 2 }}>
+                <TextField
+                    label="Buscar por descripción"
+                    variant="outlined"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    fullWidth
+                />
+            </Box>
+
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell><strong>Código</strong></TableCell>
-                            <TableCell><strong>Nombre</strong></TableCell>
                             <TableCell><strong>Descripción</strong></TableCell>
                             <TableCell><strong>Acciones</strong></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {componentes.map((comp) => (
-                            <TableRow key={comp.id}>
-                                <TableCell>{comp.codigo}</TableCell>
-                                <TableCell>{comp.nombre}</TableCell>
-                                <TableCell>{comp.descripcion}</TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        color="info"
-                                        onClick={() => openViewer(comp)}
-                                    >
-                                        Ver
-                                    </Button>
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={3} align="center">
+                                    Cargando componentes...
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : Array.isArray(componentesFiltrados) && componentesFiltrados.length > 0 ? (
+                            componentesFiltrados.map((comp) => (
+                                <TableRow key={comp.id}>
+                                    <TableCell>{comp.codigo}</TableCell>
+                                    <TableCell>{comp.descripcion}</TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            color="info"
+                                            onClick={() => openViewer(comp)}
+                                        >
+                                            Ver
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={3} align="center">
+                                    No hay componentes disponibles
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -121,9 +143,7 @@ export default function GrupoComponentes() {
             <AddComponente
                 show={showAddModal}
                 handleClose={() => setShowAddModal(false)}
-                handleSave={handleSave}
-                newComponente={newComponente}
-                handleChange={handleChange}
+                onComponenteAdded={handleComponenteAdded}
             />
 
             <ComponenteViewer
