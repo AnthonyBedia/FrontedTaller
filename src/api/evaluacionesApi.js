@@ -1,17 +1,13 @@
-import axios from "axios";
+export async function obtenerToken(credentials) {
+  const response = await fetch("http://localhost:8080/api/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
 
-export const evaluacionesApi = axios.create({
-  baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+  if (!response.ok) throw new Error("Error al iniciar sesión");
 
-// Interceptor para agregar el token de autenticación
-evaluacionesApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  }
-  return config;
-});
+  const data = await response.json();
+  localStorage.setItem("token", data.token);
+  return data.token;
+}

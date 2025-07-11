@@ -1,6 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Table, Button, Dropdown } from "react-bootstrap";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    Chip,
+    Paper
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddFormula from './addFormula';
 import DeleteFormula from './deleteFormula';
 import ViewFormula from './viewFormula';
@@ -10,14 +28,17 @@ const applicables = ["usapesos", "restamenor", "nummenor", "restamayor", "nummay
 
 export default function GrupoFormulas() {
     const dispatch = useDispatch();
-    const { formulas, estaCargandoFormulas } = useSelector((state) => state.formula);
-    const { funciones, estaCargandoFunciones } = useSelector((state) => state.funcion);
+    const { formulas } = useSelector((state) => state.formula);
+    const { funciones } = useSelector((state) => state.funcion);
 
     const [showAddModal, setShowAddModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showViewer, setShowViewer] = useState(false);
     const [selectedFormula, setSelectedFormula] = useState(null);
+
+    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [menuTarget, setMenuTarget] = useState(null);
 
     const [newformula, setNewformula] = useState({
         codigo: "",
@@ -32,27 +53,8 @@ export default function GrupoFormulas() {
     });
 
     useEffect(() => {
-        const fetchFormulas = async () => {
-            try {
-                dispatch(getFormulas());
-            } catch (err) {
-                console.error("Error cargando fórmulas:", err);
-            }
-        };
-
-        fetchFormulas();
-    }, [dispatch]);
-
-    useEffect(() => {
-        const fetchFunciones = async () => {
-            try {
-                dispatch(getFunciones());
-            } catch (err) {
-                console.error("Error cargando funciones:", err);
-            }
-        };
-
-        fetchFunciones();
+        dispatch(getFormulas());
+        dispatch(getFunciones());
     }, [dispatch]);
 
     const handleAddShow = () => setShowAddModal(true);
@@ -115,6 +117,7 @@ export default function GrupoFormulas() {
     const handleDeleteShow = (id) => {
         setDeleteId(id);
         setShowDeleteModal(true);
+        handleCloseMenu();
     };
 
     const handleDeleteClose = () => {
@@ -125,6 +128,7 @@ export default function GrupoFormulas() {
     const handleViewFormula = (formula) => {
         setSelectedFormula(formula);
         setShowViewer(true);
+        handleCloseMenu();
     };
 
     const handleCloseViewer = () => {
@@ -137,52 +141,83 @@ export default function GrupoFormulas() {
         handleDeleteClose();
     };
 
+    const handleMenuOpen = (event, formula) => {
+        setMenuAnchor(event.currentTarget);
+        setMenuTarget(formula);
+    };
+
+    const handleCloseMenu = () => {
+        setMenuAnchor(null);
+        setMenuTarget(null);
+    };
+
+    const estadoChipColor = (estado) => {
+        switch (estado) {
+            case "1": return "success";
+            case "2": return "error";
+            default: return "default";
+        }
+    };
+
+    const estadoLabel = (estado) => {
+        switch (estado) {
+            case "1": return "Activo";
+            case "2": return "Suspendido";
+            default: return estado;
+        }
+    };
+
     return (
         <section>
-            <Card className="m-4 p-2">
-                <Card.Title>Grupo de fórmulas</Card.Title>
-                <Card.Body>
-                    <Table>
-                        <thead>
-                            <tr className="text-center">
-                                <th>Codigo</th>
-                                <th>Descripción de la fórmula</th>
-                                <th>Estado de la fórmula</th>
-                                <th>Opciones</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-center">
-                            {formulas.map((f) => (
-                                <tr key={f.id}>
-                                    <td>{f.codigo}</td>
-                                    <td>{f.descripcion}</td>
-                                    <td>
-                                        <span className={
-                                            f.estado === "1"
-                                                ? "badge bg-success"
-                                                : f.estado === "2"
-                                                    ? "badge bg-danger"
-                                                    : "badge bg-secondary"
-                                        }>
-                                            {f.estado === "1" ? "Activo" : f.estado === "2" ? "Suspendido" : f.estado}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <Dropdown>
-                                            <Dropdown.Toggle>...</Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => handleViewFormula(f)}>Ver fórmula</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => handleDeleteShow(f.id)}>Eliminar fórmula</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                    <Button onClick={handleAddShow}>Añadir fórmula</Button>
-                </Card.Body>
+            <Card sx={{ margin: 4 }}>
+                <CardHeader title="Grupo de fórmulas" />
+                <CardContent>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center">Código</TableCell>
+                                    <TableCell align="center">Descripción</TableCell>
+                                    <TableCell align="center">Estado</TableCell>
+                                    <TableCell align="center">Opciones</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {formulas.map((f) => (
+                                    <TableRow key={f.id}>
+                                        <TableCell align="center">{f.codigo}</TableCell>
+                                        <TableCell align="center">{f.descripcion}</TableCell>
+                                        <TableCell align="center">
+                                            <Chip
+                                                label={estadoLabel(f.estado)}
+                                                color={estadoChipColor(f.estado)}
+                                                size="small"
+                                            />
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <IconButton onClick={(e) => handleMenuOpen(e, f)}>
+                                                <MoreVertIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Button variant="contained" sx={{ marginTop: 2 }} onClick={handleAddShow}>
+                        Añadir fórmula
+                    </Button>
+                </CardContent>
             </Card>
+
+            <Menu
+                anchorEl={menuAnchor}
+                open={Boolean(menuAnchor)}
+                onClose={handleCloseMenu}
+            >
+                <MenuItem onClick={() => handleViewFormula(menuTarget)}>Ver fórmula</MenuItem>
+                <MenuItem onClick={() => handleDeleteShow(menuTarget?.id)}>Eliminar fórmula</MenuItem>
+            </Menu>
 
             <AddFormula
                 show={showAddModal}

@@ -1,7 +1,5 @@
 import React from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
 import GrupoCursos from "./sections/grupoCursos";
 
 export default function AsignarFormula(){
@@ -9,7 +7,7 @@ export default function AsignarFormula(){
 
     return(
         <main>
-            <Button onClick={()=> navigate("../")}>Ir a inicio</Button>
+            <button onClick={()=> navigate("../")}>Ir a inicio</button>
             <GrupoCursos/>
         </main>
     );

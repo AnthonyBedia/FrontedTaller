@@ -1,0 +1,99 @@
+.crear-rubrica-layout {
+    display: flex;
+    width: 100%;
+    max-width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    position: relative;
+    background-color: #F2F8FF;
+}
+
+.main-crear-rubrica-container {
+    flex: 0 0 70%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.extra-info-crear-rubrica {
+    width: 30%;
+    padding: 1px;
+    box-sizing: border-box;
+    border-left: 1px solid #ccc;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.comp-cur-crear-rubrica {
+    text-align: center;
+}
+
+.fila-title-button {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.fila-desc {
+    padding: 10px;
+}
+
+.criterios-rubrica-container{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border-width: 0px;
+    box-shadow: 2px 2px 2px 2px #CAD0D7;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.criterio-more{
+    padding: 5px;
+    color: white;
+    width: 50px;
+    background-color: blue;
+    border-width: 0px;
+    border-radius: 50%;
+    font-size: 25px;
+}
+
+.dropdown-select{
+    width: 95%;
+}
+
+.btn-crear-rubrica{
+    background-color: blue;
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    border-width: 0px;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.btn-añadir-criterio{
+    width: 180px;
+    background-color: blue;
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    border-width: 0px;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.p-text{
+    color: blue;
+}
+
+.h3-text{
+    color: blue;
+    font-size: 48px;
+}
+
+.dropdown-textfield{
+    background-color: white;
+}
