@@ -10,7 +10,7 @@ export const AlumnoDashboard = () => {
   // Si no hay sesión, redirigir a login
   useEffect(() => {
     if (!userCookie) {
-      navigate('/alumno/login');
+      navigate('../login'); // Ruta relativa
     }
   }, [userCookie, navigate]);
 
@@ -21,28 +21,28 @@ export const AlumnoDashboard = () => {
     {
       title: 'Mis Cursos',
       description: 'Ver cursos inscritos y progreso',
-      path: '/alumno/MisCursos',
+      path: '../miscursos', // Ruta relativa que coincide con AlumnoRoutes
       icon: '📚',
       color: 'bg-blue-500',
     },
     {
       title: 'Calificaciones',
       description: 'Consultar notas y evaluaciones',
-      path: '/alumno/Calificaciones',
+      path: '../calificaciones', // Ruta relativa que coincide con AlumnoRoutes
       icon: '📊',
       color: 'bg-green-500',
     },
     {
       title: 'Horarios',
       description: 'Ver horario de clases',
-      path: '/alumno/Horarios',
+      path: '../horarios', // Ruta relativa (necesitarás crear esta ruta)
       icon: '🕒',
       color: 'bg-purple-500',
     },
     {
       title: 'Perfil',
       description: 'Editar información personal',
-      path: '/alumno/Perfil',
+      path: '../perfil', // Ruta relativa (necesitarás crear esta ruta)
       icon: '👤',
       color: 'bg-orange-500',
     },
@@ -54,7 +54,7 @@ export const AlumnoDashboard = () => {
 
   const handleLogout = () => {
     Cookies.remove('user');
-    navigate('/alumno/login');
+    navigate('../login'); // Ruta relativa
   };
 
   return (

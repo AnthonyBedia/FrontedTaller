@@ -9,17 +9,23 @@ import { Registro } from '../pages/Registro';
 export const AlumnoRoutes = () => {
   return (
     <Routes>
+      {/* Páginas públicas */}
       <Route path="/login" element={<LoginAlumno />} />
       <Route path="/registro" element={<Registro />} />
-
+      
+      {/* Rutas privadas con layout */}
       <Route path="/" element={<AlumnoLayout />}>
-        <Route index element={<Navigate to="/dashboard" />} />
+        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<AlumnoDashboard />} />
         <Route path="calificaciones" element={<Calificaciones />} />
         <Route path="miscursos" element={<MisCursos />} />
+        {/* Agregar estas rutas para que funcionen los enlaces del dashboard */}
+        <Route path="horarios" element={<div>Página de Horarios - En desarrollo</div>} />
+        <Route path="perfil" element={<div>Página de Perfil - En desarrollo</div>} />
       </Route>
-
-      <Route path="*" element={<Navigate to="/login" />} />
+      
+      {/* Redirección catch-all */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 };
