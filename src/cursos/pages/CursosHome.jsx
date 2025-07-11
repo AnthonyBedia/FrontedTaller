@@ -21,6 +21,8 @@ export const CursosHome = ( {vista} ) => {
         <main>
             <button onClick={()=> navigate("/evaluaciones/")}>Ir a evaluaciones</button>
             <button onClick={()=> navigate("/docentes/")}>Ir a docentes</button>
+            <button onClick={()=> navigate("/alumno/login")}>Ir a Alumnos</button>
+            
             <CursosLayout>
                 { contenido }
             </CursosLayout>
