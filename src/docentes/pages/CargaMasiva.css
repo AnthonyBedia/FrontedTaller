@@ -1,0 +1,162 @@
+.carga-masiva-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.carga-masiva-container h2 {
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.step-container {
+    background-color: #fff;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step-container label {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Buscador de Cursos --- */
+.buscador-cursos {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.buscador-input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.buscador-cursos input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.buscador-cursos .clear-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0 12px;
+    margin-left: -40px;
+    cursor: pointer;
+    height: 38px;
+}
+.buscador-cursos .clear-btn:hover {
+    background: #c0392b;
+}
+
+
+.resultados-lista {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    list-style: none;
+    padding: 0;
+    margin-top: 5px;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    border-radius: 4px;
+}
+
+.resultados-lista li {
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.resultados-lista li:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- Dropzone --- */
+.dropzone {
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    margin-top: 10px;
+    cursor: pointer;
+    color: #007bff;
+    background-color: #f0f7ff;
+    transition: background-color 0.2s ease;
+}
+
+.dropzone-active {
+    background-color: #e0f0ff;
+}
+
+.archivo-seleccionado {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* --- Botón y Resultados --- */
+.upload-button {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.upload-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.upload-button:not(:disabled):hover {
+    background-color: #218838;
+}
+
+.error-message {
+    color: #dc3545;
+    margin-top: 20px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.resultado-carga {
+    margin-top: 20px;
+    border: 1px solid #28a745;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #e9f7ef;
+}
+
+.resultado-carga h3 {
+    color: #155724;
+}
+
+.resultado-carga ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.resultado-carga .errores-detalle {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+}

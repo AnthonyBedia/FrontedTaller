@@ -20,6 +20,7 @@ const GruposCurso = () => {
     const [mostrarSugerenciasGrupos, setMostrarSugerenciasGrupos] = useState(false);
     const [porCodigo, setPorCodigo] = useState(false);
     const [maxAlumnosPorGrupo, setMaxAlumnosPorGrupo] = useState(5);
+    const [alumnocursoId, setAlumnocursoId] = useState(null);
     
     // Estados para el menú contextual
     const [menuContextual, setMenuContextual] = useState({
@@ -81,15 +82,56 @@ const GruposCurso = () => {
         setMostrarSugerenciasGrupos(false);
     };
 
-    const handleContextMenu = (e, tipo, datos) => {
+    const handleContextMenu = async (e, tipo, datos) => {
         e.preventDefault();
-        setMenuContextual({
-            mostrar: true,
-            x: e.clientX,
-            y: e.clientY,
-            tipo,
-            datos
-        });
+        
+        if (tipo === 'alumno') {
+            try {
+                // Obtener el alumnocursoId usando el código del alumno y el curso
+                const alumnocursoId = await alumnoService.buscarAlumnoPorCodigoyCurso(datos.alumno.codigo, cursoSeleccionado.id);
+                console.log('alumnocursoId obtenido:', alumnocursoId);
+                
+                // Guardar el alumnocursoId en el estado
+                setAlumnocursoId(alumnocursoId);
+                
+                // Actualizar los datos con el alumnocursoId
+                const datosCompletos = {
+                    ...datos,
+                    alumnocursoId: alumnocursoId
+                };
+                
+                setMenuContextual({
+                    mostrar: true,
+                    x: e.clientX,
+                    y: e.clientY,
+                    tipo,
+                    datos: datosCompletos
+                });
+            } catch (error) {
+                console.error('Error obteniendo alumnocursoId:', error);
+                // Si falla, mostrar el menú sin alumnocursoId
+                setAlumnocursoId(null);
+                setMenuContextual({
+                    mostrar: true,
+                    x: e.clientX,
+                    y: e.clientY,
+                    tipo,
+                    datos: {
+                        ...datos,
+                        alumnocursoId: null
+                    }
+                });
+            }
+        } else {
+            // Para grupos, mostrar el menú directamente
+            setMenuContextual({
+                mostrar: true,
+                x: e.clientX,
+                y: e.clientY,
+                tipo,
+                datos
+            });
+        }
     };
 
     const cerrarMenuContextual = () => {
@@ -104,6 +146,7 @@ const GruposCurso = () => {
 
     const handleOpcionMenu = async (opcion) => {
         console.log(`Opción seleccionada: ${opcion}`, menuContextual.datos);
+        console.log('alumnocursoId guardado:', alumnocursoId);
         
         if (opcion === 'verNotas') {
             // Navegar a RegistroNotas con los datos seleccionados
@@ -137,6 +180,10 @@ const GruposCurso = () => {
                 console.error('Error eliminando grupo:', error);
                 alert(`Error eliminando grupo: ${error.message}`);
             }
+        } else if (opcion === 'crearGrupo') {
+            console.log('Crear grupo');
+            grupoService.crearGrupo(cursoSeleccionado.id, [alumnocursoId ]);
+            recargarDatos();
         }
         
         cerrarMenuContextual();
@@ -345,6 +392,10 @@ const GruposCurso = () => {
                         gruposInfo={gruposInfo}
                         grupoSeleccionado={grupoSeleccionado}
                         handleContextMenu={handleContextMenu}
+                        cursoSeleccionado={cursoSeleccionado}
+                        onDatosActualizados={recargarDatos}
+                        maxAlumnosPorGrupo={maxAlumnosPorGrupo}
+                        setAlumnocursoId={setAlumnocursoId}
                     />
                 </div>
             </div>

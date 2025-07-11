@@ -59,9 +59,9 @@ const MenuContextual = ({
                         }}
                         onMouseOver={(e) => e.target.style.backgroundColor = '#f5f5f5'}
                         onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
-                        onClick={() => handleOpcionMenu('cambiarGrupo')}
+                        onClick={() => handleOpcionMenu('crearGrupo')}
                     >
-                        Cambiar grupo
+                        Crear grupo
                     </div>
                 </>
             )}
