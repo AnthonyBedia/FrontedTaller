@@ -4,6 +4,7 @@ import { AuthRoutes } from '../../seguridad/routes/AuthRoutes'
 import { CursosRoutes } from '../../cursos/routes/CursosRoutes'
 import { EvaluacionesRoutes } from "../../evaluaciones/routes/EvaluacionesRoutes";
 import { DocenteRoutes } from '../../docentes/routes/DocenteRoutes';
+import { DashboardLayout } from '../layouts/DashboardLayout';
 
 import { CheckingAuth } from '../../seguridad/components';
 import { useCheckAuth } from '../../seguridad/hooks';
@@ -17,11 +18,15 @@ export const AppRouter = () => {
   }
 
   return (
+
     <Routes>
         {
           (status === 'authenticated') 
+          
            ? 
+           
            <>
+           <Route path="/dashboard" element={<DashboardLayout />} />
             <Route path="/cursos/*" element={ <CursosRoutes /> } />
             <Route path="/evaluaciones/*" element={<EvaluacionesRoutes />} />
             <Route path="/docentes/*" element={<DocenteRoutes />} />
@@ -30,7 +35,7 @@ export const AppRouter = () => {
         }
         
       <Route path="*" element={
-        <Navigate to={status === 'authenticated' ? "/cursos/resumen" : "/auth/login"} />
+        <Navigate to={status === 'authenticated' ? "/dashboard" : "/auth/login"} />
       } />
   </Routes>
   )
