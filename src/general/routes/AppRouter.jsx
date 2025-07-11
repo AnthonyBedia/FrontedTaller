@@ -4,6 +4,7 @@ import { AuthRoutes } from '../../seguridad/routes/AuthRoutes'
 import { CursosRoutes } from '../../cursos/routes/CursosRoutes'
 import { EvaluacionesRoutes } from "../../evaluaciones/routes/EvaluacionesRoutes";
 import { DocenteRoutes } from '../../docentes/routes/DocenteRoutes';
+import { AlumnoRoutes } from '../../alumno/routes/AlumnoRoutes'; 
 
 import { CheckingAuth } from '../../seguridad/components';
 import { useCheckAuth } from '../../seguridad/hooks';
@@ -25,6 +26,7 @@ export const AppRouter = () => {
             <Route path="/cursos/*" element={ <CursosRoutes /> } />
             <Route path="/evaluaciones/*" element={<EvaluacionesRoutes />} />
             <Route path="/docentes/*" element={<DocenteRoutes />} />
+            <Route path="/alumno/*" element={<AlumnoRoutes />} /> 
            </>
             : <Route path="/auth/*" element={ <AuthRoutes /> } />
         }
