@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './registro.css';
-import { useNavigate } from 'react-router-dom';
-const urlBack = import.meta.env.VITE_APP_BACKEND_ALUMNO_URL;
+import { useNavigate, Link } from 'react-router-dom';
 
 export const Registro = () => {
   const navigate = useNavigate();
@@ -49,7 +48,7 @@ export const Registro = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(urlBack+'api-alumno/v1/auth/registro', {
+      const response = await fetch('https://modulo-alumno-abgwebgxfsdma0fp.canadacentral-01.azurewebsites.net/api-alumno/v1/auth/registro', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,8 +67,8 @@ export const Registro = () => {
         throw new Error(errorData.message || 'Error en el registro');
       }
 
-      // Registro exitoso - redirigir a login con estado
-      navigate('/alumno/login', {
+      // Registro exitoso - redirigir a login con estado usando ruta relativa
+      navigate('../login', {
         state: { 
           registrationSuccess: true,
           username: formData.username 
@@ -186,7 +185,7 @@ export const Registro = () => {
 
           <div className="extra-options">
             <span>¿Ya tienes cuenta? </span>
-            <a href="/alumno/login">Inicia sesión aquí</a>
+            <Link to="../login">Inicia sesión aquí</Link>
           </div>
         </form>
       </div>        

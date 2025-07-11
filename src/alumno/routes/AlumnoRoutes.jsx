@@ -4,33 +4,28 @@ import { AlumnoLayout } from '../layout/AlumnoLayout';
 import { AlumnoDashboard } from '../pages/AlumnoDashboard';
 import { Calificaciones } from '../pages/Calificaciones';
 import { MisCursos } from '../pages/MisCursos';
-
-
 import { Registro } from '../pages/Registro';
-
 
 export const AlumnoRoutes = () => {
   return (
     <Routes>
+      {/* Páginas públicas */}
       <Route path="/login" element={<LoginAlumno />} />
+      <Route path="/registro" element={<Registro />} />
       
-      {/* Rutas protegidas con layout */}
+      {/* Rutas privadas con layout */}
       <Route path="/" element={<AlumnoLayout />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<AlumnoDashboard />} />
-        <Route path="" element={<Navigate to="/alumno/dashboard" />} />
-
-        <Route path="Calificaciones" element={<Calificaciones />} />
-        <Route path="" element={<Navigate to="/alumno/Calificaciones" />} />
-
-        <Route path="MisCursos" element={<MisCursos />} />
-        <Route path="" element={<Navigate to="/alumno/MisCursos" />} />
+        <Route path="calificaciones" element={<Calificaciones />} />
+        <Route path="miscursos" element={<MisCursos />} />
+        {/* Agregar estas rutas para que funcionen los enlaces del dashboard */}
+        <Route path="horarios" element={<div>Página de Horarios - En desarrollo</div>} />
+        <Route path="perfil" element={<div>Página de Perfil - En desarrollo</div>} />
       </Route>
-
       
-        <Route path="Registro" element={<Registro />} />
-        <Route path="" element={<Navigate to="/alumno/Registro" />} />
-      {/* Ruta por defecto */}
-      <Route path="*" element={<Navigate to="/alumno/login" />} />
+      {/* Redirección catch-all */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 };

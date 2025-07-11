@@ -129,7 +129,7 @@ const AsociarComponentesPage = () => {
     }
     let data = {};
     try {
-      const response = await fetch("http://localhost:8080/componentes", {
+      const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -259,7 +259,7 @@ const AsociarComponentesPage = () => {
   ) => {
     // Asociar cada competencia seleccionada al componente
     for (const competencia of competenciasSeleccionadas) {
-      await fetch("http://localhost:8080/api/componente-competencia", {
+      await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -392,7 +392,7 @@ const AsociarComponentesPage = () => {
                         const token = localStorage.getItem("token");
                         for (const competencia of comp.competencias) {
                           await fetch(
-                            "http://localhost:8080/api/componente-competencia",
+                            "https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia",
                             {
                               method: "POST",
                               headers: {

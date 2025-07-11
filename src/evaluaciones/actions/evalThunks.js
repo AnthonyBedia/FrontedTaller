@@ -1,7 +1,8 @@
 import { iniciaCargaFormulas, cargaFormulas, cargaFormulaIdActiva } from "../slices/formulaSlice";
 import { iniciaCargaFunciones, cargaFunciones, cargaFuncionIdActiva } from "../slices/funcionSlice";
 import { iniciaGuardadoRubrica, guardadoRubricaExitoso, guardadoRubricaError } from "../slices/rubricaSlice";
-
+import { iniciaCargaComponentes, cargaComponentes } from "../slices/componenteSlice";
+import { iniciaCargaRubricas, cargaRubricasExitoso, errorCargaRubricas, seleccionaRubrica } from "../slices/rubricaSlice";
 
 
 export const getFormulas = () => {
@@ -10,7 +11,7 @@ export const getFormulas = () => {
         const token= localStorage.getItem("token")
         console.log("TOKEN actual: ", token)
         dispatch( iniciaCargaFormulas() );
-        const resp = await fetch(`http://localhost:8080/api/formula`, {
+        const resp = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -28,7 +29,7 @@ export const postFormula = (nuevaFormula) => {
     return async (dispatch, getState) => {
         try {
             const token= localStorage.getItem("token")
-            const response = await fetch("http://localhost:8080/api/formula", {
+            const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export const deleteFormula = (id) => {
     return async (dispatch, getState) => {
         try {
             const token= localStorage.getItem("token")
-            const response = await fetch(`http://localhost:8080/api/formula/${id}`, {
+            const response = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -78,7 +79,7 @@ export const updateFormula = (formulaActualizada) => {
     return async (dispatch, getState) => {
         try {
             const token= localStorage.getItem("token")
-            const response = await fetch(`http://localhost:8080/api/formula/${formulaActualizada.id}`, {
+            const response = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula/${formulaActualizada.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -109,7 +110,7 @@ export const getFunciones = () => {
         const token= localStorage.getItem("token")
         dispatch( iniciaCargaFunciones() );
         
-        const resp = await fetch(`http://localhost:8080/api/funcion`, {
+        const resp = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/funcion`, {
             method: "GET",
             headers:{
                 "Content-Type": "application/json",
@@ -129,7 +130,7 @@ export const postRubrica = (rubricaData) => {
             const token= localStorage.getItem("token")
             dispatch(iniciaGuardadoRubrica());
 
-            const response = await fetch("http://localhost:8080/api/rubricas", {
+            const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/rubricas", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -150,20 +151,27 @@ export const postRubrica = (rubricaData) => {
 };
 
 export const getComponentes = () => {
-  return async () => {
+  return async (dispatch) => {
     const token = localStorage.getItem("token");
-    const resp = await fetch("http://localhost:8080/componentes", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await resp.json();
-    return { payload: data };
+    dispatch(iniciaCargaComponentes());
+    try {
+      const resp = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await resp.json();
+      dispatch(cargaComponentes({ componentes: data }));
+    } catch (error) {
+      console.error("Error al cargar componentes:", error);
+    }
   };
 };
 
 export const updateComponente = (componente) => {
   return async () => {
     const token = localStorage.getItem("token");
-    await fetch(`http://localhost:8080/componentes/${componente.id}`, {
+    await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes/${componente.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -177,7 +185,7 @@ export const updateComponente = (componente) => {
 export const postComponente = (nuevoComponente) => {
   return async () => {
     const token = localStorage.getItem("token");
-    await fetch("http://localhost:8080/componentes", {
+    await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -185,5 +193,54 @@ export const postComponente = (nuevoComponente) => {
       },
       body: JSON.stringify(nuevoComponente)
     });
+  };
+};
+
+
+export const getArbol = () => {
+
+    return async(dispatch, getState) => {
+        const token= localStorage.getItem("token")
+        console.log("TOKEN actual: ", token)
+        dispatch( iniciaCargaArbol() );
+        const resp = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias/{competenciaId}/arbol-componentes`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        const data = await resp.json();
+        
+        console.log( data );
+        dispatch( cargaArbol( { formulas: data } ) );
+    }
+}
+
+export const getRubricas = () => {
+  return async (dispatch) => {
+    dispatch(iniciaCargaRubricas());
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/rubricas", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      dispatch(cargaRubricasExitoso(data));
+    } catch (error) {
+      console.error("Error cargando rúbricas:", error);
+      dispatch(errorCargaRubricas(error.message));
+    }
+  };
+};
+
+export const seleccionarRubricaPorId = (id) => {
+  return (dispatch, getState) => {
+    const { rubricas } = getState().rubrica;
+    const seleccionada = rubricas.find((r) => r.id === id);
+    dispatch(seleccionaRubrica(seleccionada || null));
   };
 };

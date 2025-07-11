@@ -2,27 +2,50 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import './Calificaciones.css';
-const urlBack = import.meta.env.VITE_APP_BACKEND_ALUMNO_URL;
 
 export const Calificaciones = () => {
   const navigate = useNavigate();
   const [notas, setNotas] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const cookieUser = Cookies.get('user');
   const { codigoAlumno, nombreVisualizar } = cookieUser ? JSON.parse(cookieUser) : {};
 
   useEffect(() => {
     if (codigoAlumno) {
-      fetch(urlBack+`api-alumno/v1/notas/${codigoAlumno}`)
+      fetch(`https://modulo-alumno-abgwebgxfsdma0fp.canadacentral-01.azurewebsites.net/api-alumno/v1/notas/${codigoAlumno}`)
         .then((res) => res.json())
-        .then((data) => setNotas(data))
-        .catch((err) => console.error('Error al obtener notas:', err));
+        .then((data) => {
+          setNotas(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error('Error al obtener notas:', err);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
   }, [codigoAlumno]);
 
-  if (!codigoAlumno || notas.length === 0)
+  if (loading) {
     return <p style={{ padding: '2rem' }}>Cargando notas...</p>;
+  }
+
+  if (!codigoAlumno || notas.length === 0) {
+    return (
+      <div className="page-container">
+        <div className="page-header">
+          <button onClick={() => navigate('../dashboard')} className="back-btn">
+            ← Volver al Dashboard
+          </button>
+          <h1>Calificaciones</h1>
+        </div>
+        <p style={{ padding: '2rem' }}>No se encontraron notas disponibles.</p>
+      </div>
+    );
+  }
 
   const curso = notas[0]?.nombre;
   const periodo = notas[0]?.codigo;
@@ -40,7 +63,7 @@ export const Calificaciones = () => {
   return (
     <div className="page-container">
       <div className="page-header">
-        <button onClick={() => navigate('/alumno/dashboard')} className="back-btn">
+        <button onClick={() => navigate('../dashboard')} className="back-btn">
           ← Volver al Dashboard
         </button>
         <h1>Calificaciones</h1>

@@ -7,6 +7,9 @@ import Formulas from "../pages/formulas";
 import AsignarFormula from "../pages/asignarformula";
 import ComponentePage from "../pages/grupocomponente"; 
 import CrearRubrica from "../pages/crearrubrica"
+import VerRubrica from "../pages/verrubrica"
+import ArbolCompetenciaPage from "../pages/arboldashboard";
+import { DashboardLayout } from '../../general/layouts/DashboardLayout';
 
 import MainEval from "../pages/EvalHome";
 
@@ -17,12 +20,16 @@ export const EvaluacionesRoutes = () => {
 
   return (
     <Routes>
-      <Route path="componente" element={<AsociarComponentesPage />} />
-      <Route path="competencias" element={<CompetenciasPage />} />
-      <Route path='formulas' element={<Formulas/>}/>
-      <Route path="asignarformula" element={<AsignarFormula/>}/>
-      <Route path="componentes" element={<ComponentePage />} /> 
-      <Route path="/" element={<MainEval/>}/>
+      <Route element={<DashboardLayout />}>
+        <Route path="componente" element={<AsociarComponentesPage />} />
+        <Route path="competencias" element={<CompetenciasPage />} />
+        <Route path='formulas' element={<Formulas/>}/>
+        <Route path="asignarformula" element={<AsignarFormula/>}/>
+        <Route path="componentes" element={<ComponentePage />} /> 
+        <Route path="/" element={<MainEval/>}/>
+        <Route path="visualizarrubrica" element={<VerRubrica/>}/>
+        <Route path="arboldashboard" element={<ArbolCompetenciaPage />} />
+      </Route>
       <Route path="crearrubrica" element={<CrearRubrica/>}/>
     </Routes>
   );

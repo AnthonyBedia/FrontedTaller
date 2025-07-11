@@ -33,11 +33,12 @@ export const DashboardLayout = () => {
       id: 'evaluaciones',
       title: '📊 Evaluaciones',
       items: [
-        { id: 'componentes-pesos', label: 'Componentes y Pesos' },
-        { id: 'formulas-evaluacion', label: 'Fórmulas de Evaluación' },
-        { id: 'relacion-competencias', label: 'Relación con Competencias' },
-        { id: 'rubricas', label: 'Rúbricas' },
-        { id: 'visualizacion-evaluaciones', label: 'Visualización de Evaluaciones' }
+        { id: 'componente', label: 'Componentes y Competencias' },
+        { id: 'componentes', label: 'Crear Componentes' },
+        { id: 'formulas', label: 'Fórmulas de Evaluación' },
+        { id: 'crearrubrica', label: 'Crear rúbricas' },
+        { id: 'visualizarrubrica', label: 'Ver rúbricas' },
+        { id: 'arboldashboard', label: 'Árbol de componentes' }
       ]
     },
     {
