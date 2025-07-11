@@ -26,7 +26,7 @@ export const AppRouter = () => {
             <Route path="/cursos/*" element={ <CursosRoutes /> } />
             <Route path="/evaluaciones/*" element={<EvaluacionesRoutes />} />
             <Route path="/docentes/*" element={<DocenteRoutes />} />
-            <Route path="/alumno/*" element={<AlumnoRoutes />} /> 
+
            </>
             : <Route path="/auth/*" element={ <AuthRoutes /> } />
         }
@@ -34,6 +34,8 @@ export const AppRouter = () => {
       <Route path="*" element={
         <Navigate to={status === 'authenticated' ? "/cursos/resumen" : "/auth/login"} />
       } />
+   <Route path="/alumno/*" element={<AlumnoRoutes />} /> 
+
   </Routes>
   )
 }

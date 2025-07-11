@@ -1,0 +1,157 @@
+.notas-container {
+  background-color: #f0f7ff;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  max-width: 700px;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.header {
+  background-color: #0d1f63;
+  color: white;
+  padding: 1rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.filtro {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.periodo {
+  background-color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+.tarjeta-curso {
+  background-color: white;
+  padding: 1.2rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tarjeta-curso p {
+  margin: 0.4rem 0;
+}
+
+.detalles-btn {
+  background-color: #2d6cdf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.3rem 0.8rem;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.detalles-btn:hover {
+  background-color: #1d4cc0;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  width: 70%;
+  height: 60%;
+  padding: 2rem;
+  border-radius: 10px;
+  position: relative;
+}
+
+.cerrar-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80%;
+  padding: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cerrar-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.tabla-scroll {
+  overflow-y: auto;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.tabla-detalles {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla-detalles th,
+.tabla-detalles td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.tabla-detalles th {
+  background-color: #f4f4f4;
+}
+
+.empty-message {
+  margin-top: 10px;
+  color: #555;
+  text-align: center;
+}
