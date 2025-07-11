@@ -71,18 +71,18 @@ const TablaGrupos = ({
                     } else {
                         console.log('Grupo disponible para agregar alumno');
                         setGrupoLleno(false);
-                        
-                        // Actualizar dragData con el grupo objetivo
+                
+                // Actualizar dragData con el grupo objetivo
                         const updatedDragData = {
                             ...dragData,
-                            targetGrupo: grupoId
+                    targetGrupo: grupoId
                         };
                         console.log('updatedDragData:', updatedDragData);
                         setDragData(updatedDragData);
-                        
-                        // Mostrar modal de confirmación
-                        setModalPosition({ x: e.clientX, y: e.clientY });
-                        setShowModal(true);
+                
+                // Mostrar modal de confirmación
+                setModalPosition({ x: e.clientX, y: e.clientY });
+                setShowModal(true);
                     }
                 } catch (error) {
                     console.error('Error verificando cantidad de alumnos:', error);
@@ -113,7 +113,7 @@ const TablaGrupos = ({
             if (dragData?.alumno && dragData?.targetGrupo && cursoSeleccionado) {
                 // Buscar el alumnocursoId usando el código del alumno y el curso
                 const alumnocursoId = await alumnoService.buscarAlumnoPorCodigoyCurso(dragData.alumno.codigo, cursoSeleccionado.id);
-                
+
                 if (alumnocursoId && alumnocursoId > 0) {
                     // Llamar al servicio para agregar alumno al grupo
                     await grupoService.agregarAlumnosAGrupo([alumnocursoId], dragData.targetGrupo);
