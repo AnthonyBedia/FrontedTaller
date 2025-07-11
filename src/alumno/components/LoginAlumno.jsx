@@ -3,8 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './FormStyle.css';
 
-const urlBack = import.meta.env.VITE_APP_BACKEND_ALUMNO_URL;
-
 export const LoginAlumno = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +16,7 @@ export const LoginAlumno = () => {
     setError(null);
 
     try {
-      const response = await fetch(urlBack+`api-alumno/v1/auth/login`, {
+      const response = await fetch(`https://modulo-alumno-abgwebgxfsdma0fp.canadacentral-01.azurewebsites.net/api-alumno/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
