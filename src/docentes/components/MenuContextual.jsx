@@ -66,19 +66,34 @@ const MenuContextual = ({
                 </>
             )}
             {menuContextual.tipo === 'grupo' && (
-                <div
-                    style={{
-                        padding: '8px 12px',
-                        cursor: 'pointer',
-                        color: '#dc3545',
-                        ':hover': { backgroundColor: '#f5f5f5' }
-                    }}
-                    onMouseOver={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                    onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
-                    onClick={() => handleOpcionMenu('eliminarGrupo')}
-                >
-                    Eliminar grupo
-                </div>
+                <>
+                    <div
+                        style={{
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            borderBottom: '1px solid #eee',
+                            ':hover': { backgroundColor: '#f5f5f5' }
+                        }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
+                        onClick={() => handleOpcionMenu('verNotas')}
+                    >
+                        Ver notas
+                    </div>
+                    <div
+                        style={{
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            color: '#dc3545',
+                            ':hover': { backgroundColor: '#f5f5f5' }
+                        }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
+                        onClick={() => handleOpcionMenu('eliminarGrupo')}
+                    >
+                        Eliminar grupo
+                    </div>
+                </>
             )}
         </div>
     );
