@@ -1,0 +1,251 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useTheme } from '@mui/material/styles';
+
+
+import { useOutletContext } from 'react-router-dom';
+
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Checkbox,
+  Typography,
+  Grid,
+  Paper,
+} from '@mui/material';
+import './PersonalizacionModel.css';
+
+
+export const Personalizacion = () => {
+
+  const { setTema } = useOutletContext();
+  
+  const theme = useTheme();
+
+  const navigate = useNavigate();
+
+  /*const [tema, setTemaLocal] = useState('claro');*/
+  const [tema, setTemaLocal] = useState(() => {
+  const preferencias = JSON.parse(localStorage.getItem('preferencias'));
+  return preferencias?.tema_visualizacion || 'claro';
+  });
+  const [tamanioFuente, setTamanioFuente] = useState(() => {
+    const prefs = JSON.parse(localStorage.getItem('preferencias')) || {};
+    return prefs.tamanio_fuente || 'mediano';
+  });
+  const [tipoFuente, setTipoFuente] = useState(() => {
+    const prefs = JSON.parse(localStorage.getItem('preferencias')) || {};
+    return prefs.tipo_fuente || 'serif';
+  });
+  const [mostrarCodigoCurso, setMostrarCodigoCurso] = useState(true);
+  const [mostrarNombreDocente, setMostrarNombreDocente] = useState(true);
+  const [mostrarIdCurso, setMostrarIdCurso] = useState(true);
+  const [seccionInicio, setSeccionInicio] = useState('dashboard');
+
+  useEffect(() => {
+    const preferencias = JSON.parse(localStorage.getItem('preferencias')) || {};
+    preferencias.tipo_fuente = tipoFuente;
+    preferencias.tamanio_fuente = tamanioFuente;
+    localStorage.setItem('preferencias', JSON.stringify(preferencias));
+
+    document.body.style.fontFamily = obtenerFuente(tipoFuente);
+    document.body.style.fontSize = obtenerTamanio(tamanioFuente);
+  }, [tipoFuente, tamanioFuente]);
+
+
+  const handleGuardar = () => {
+    const preferencias = {
+      tema_visualizacion: tema,
+      tamanio_fuente: tamanioFuente,
+      tipo_fuente: tipoFuente,
+      mostrar_codigo_curso: mostrarCodigoCurso,
+      mostrar_docente_curso: mostrarNombreDocente,
+      mostrar_id_curso: mostrarIdCurso,
+      seccion_inicio: seccionInicio,
+    };
+
+    const userId = JSON.parse(localStorage.getItem('user')).id;
+
+    fetch(`http://localhost:8080/api-alumno/v1/personalizacion/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(preferencias),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Error al guardar preferencias');
+        return res.json();
+      })
+      .then((data) => {
+        alert('Preferencias guardadas correctamente');
+        localStorage.setItem('preferencias', JSON.stringify(data));
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('Hubo un error al guardar tus preferencias.');
+      });
+  };
+
+
+  const handleTemaChange = (e) => {
+  const nuevoTema = e.target.value;
+  setTemaLocal(nuevoTema);
+  setTema(nuevoTema);
+
+  const preferencias = JSON.parse(localStorage.getItem('preferencias')) || {};
+  preferencias.tema_visualizacion = nuevoTema;
+  localStorage.setItem('preferencias', JSON.stringify(preferencias));
+  };
+
+  const obtenerFuente = (tipo) => {
+    switch (tipo) {
+      case 'inter': return 'Inter, sans-serif';
+      case 'serif': return 'Georgia, serif';
+      case 'monoespaciado': return '"Courier Prime", monospace';
+      default: return 'sans-serif';
+    }
+  };
+
+  const obtenerTamanio = (tam) => {
+    switch (tam) {
+      case 'pequeno': return '13px';
+      case 'mediano': return '16px';
+      case 'grande': return '19px';
+      default: return '16px';
+    }
+  };
+
+
+
+  return (
+    <Box className="contenedor-personalizacion"
+    sx={{
+      backgroundColor: theme.palette.background.default,
+    }}>
+      <button onClick={() => navigate('/alumno/dashboard')} className="back-btn">
+          ← Volver al Dashboard
+        </button>
+      <Typography variant="h5" gutterBottom>
+        Personalización del Usuario
+      </Typography>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6}>
+          <Card sx={{
+            backgroundColor: theme.palette.background.paper
+          }}>
+            <CardContent>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Tema de visualización</FormLabel>
+                <RadioGroup
+                  value={tema}
+                  onChange={handleTemaChange}
+                >
+                  <FormControlLabel value="claro" control={<Radio />} label="Modo claro" />
+                  <FormControlLabel value="oscuro" control={<Radio />} label="Modo oscuro" />
+                </RadioGroup>
+              </FormControl>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1">Formato del texto</Typography>
+              <Box>
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Tamaño de fuente</FormLabel>
+                  <RadioGroup
+                    value={tamanioFuente}
+                    onChange={(e) => setTamanioFuente(e.target.value)}
+                    row
+                  >
+                    <FormControlLabel value="pequeno" control={<Radio />} label="Pequeño" />
+                    <FormControlLabel value="mediano" control={<Radio />} label="Mediano" />
+                    <FormControlLabel value="grande" control={<Radio />} label="Grande" />
+                  </RadioGroup>
+                </FormControl>
+
+                <FormControl component="fieldset" sx={{ mt: 2 }}>
+                  <FormLabel component="legend">Tipo de fuente</FormLabel>
+                  <RadioGroup
+                    value={tipoFuente}
+                    onChange={(e) => setTipoFuente(e.target.value)}
+                    row
+                  >
+                    <FormControlLabel value="inter" control={<Radio />} label="Inter" />
+                    <FormControlLabel value="serif" control={<Radio />} label="Serif" />
+                    <FormControlLabel value="monoespaciado" control={<Radio />} label="Monoespaciado" />
+                  </RadioGroup>
+                </FormControl>
+
+                <Paper className="vista-previa-fuente" elevation={1}>
+                  Ejemplo de fuente personalizada
+                </Paper>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1">Visualización de información de cursos</Typography>
+              <FormControlLabel
+                control={<Checkbox checked={mostrarCodigoCurso} onChange={() => setMostrarCodigoCurso(!mostrarCodigoCurso)} />}
+                label="Visualizar código de curso"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={mostrarNombreDocente} onChange={() => setMostrarNombreDocente(!mostrarNombreDocente)} />}
+                label="Visualizar nombre de docente"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={mostrarIdCurso} onChange={() => setMostrarIdCurso(!mostrarIdCurso)} />}
+                label="Visualizar ID del curso"
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1">Sección de inicio personalizada</Typography>
+              <RadioGroup
+                value={seccionInicio}
+                onChange={(e) => setSeccionInicio(e.target.value)}
+              >
+                <FormControlLabel value="dashboard" control={<Radio />} label="Dashboard general" />
+                <FormControlLabel value="cursos" control={<Radio />} label="Mis cursos" />
+                <FormControlLabel value="notas" control={<Radio />} label="Calificaciones" />
+                <FormControlLabel value="horarios" control={<Radio />} label="Horarios" />
+                <FormControlLabel value="perfil" control={<Radio />} label="Perfil" />
+                <FormControlLabel value="competencias" control={<Radio />} label="Competencias por curso" />
+              </RadioGroup>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Box className="botones-accion">
+        <Button variant="contained" color="primary" onClick={handleGuardar}>Guardar</Button>
+        <Button variant="outlined" color="error">Cancelar</Button>
+      </Box>
+    </Box>
+  );
+
+
+};
+
+
+export default Personalizacion;

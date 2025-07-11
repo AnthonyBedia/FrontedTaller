@@ -1,0 +1,49 @@
+/* Contenedor principal */
+.contenedor-personalizacion {
+  padding: 2rem;
+  /*background-color: #f3f7ff;*/
+  min-height: 100vh;
+}
+
+/* Vista previa del texto personalizado */
+.vista-previa-fuente {
+  margin-top: 1rem;
+  padding: 1rem;
+  /*background-color: #ffffff;*/
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+  color: #333;
+}
+
+/* Contenedor de botones */
+.botones-accion {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Card spacing */
+.MuiCard-root {
+  /*background-color: #fff;*/
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Etiquetas y títulos */
+.MuiFormLabel-root {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Tipografía general */
+.MuiTypography-h5 {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Ajuste de radio y checkbox */
+.MuiFormControlLabel-root {
+  margin-top: 0.5rem;
+}

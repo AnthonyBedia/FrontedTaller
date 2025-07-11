@@ -5,6 +5,7 @@ import { AlumnoDashboard } from '../pages/AlumnoDashboard';
 import { Calificaciones } from '../pages/Calificaciones';
 import { MisCursos } from '../pages/MisCursos';
 import { Registro } from '../pages/Registro';
+import { Personalizacion } from '../pages/Personalizacion';
 
 export const AlumnoRoutes = () => {
   return (
@@ -22,6 +23,9 @@ export const AlumnoRoutes = () => {
         {/* Agregar estas rutas para que funcionen los enlaces del dashboard */}
         <Route path="horarios" element={<div>Página de Horarios - En desarrollo</div>} />
         <Route path="perfil" element={<div>Página de Perfil - En desarrollo</div>} />
+        
+        <Route path="personalizar" element={<Personalizacion />} />
+        <Route path="" element={<Navigate to="/alumno/personalizar" />} />
       </Route>
       
       {/* Redirección catch-all */}

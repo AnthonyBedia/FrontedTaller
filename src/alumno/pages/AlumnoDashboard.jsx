@@ -39,6 +39,13 @@ export const AlumnoDashboard = () => {
       icon: '🕒',
       color: 'bg-purple-500',
     },
+     {
+      title: 'Competencias por Curso',
+      description: 'Visualizar competencias del sílabo del curso',
+      path: '/alumno/competencias',
+      icon: '🚀',
+      color: 'bg-orange-500'
+    },
     {
       title: 'Perfil',
       description: 'Editar información personal',
