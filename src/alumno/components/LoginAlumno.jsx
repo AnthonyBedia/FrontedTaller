@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './FormStyle.css';
+
 const urlBack = import.meta.env.VITE_APP_BACKEND_ALUMNO_URL;
 
 export const LoginAlumno = () => {
@@ -17,7 +18,7 @@ export const LoginAlumno = () => {
     setError(null);
 
     try {
-      const response = await fetch(urlBack+'api-alumno/v1/auth/login', {
+      const response = await fetch(`${urlBack}api-alumno/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,19 +39,23 @@ export const LoginAlumno = () => {
 
       const userData = JSON.parse(rawData);
 
-      // Validar que venga todo lo necesario
       if (!userData.username || !userData.nombreVisualizar || !userData.codigoAlumno) {
         throw new Error('Datos de usuario incompletos en la respuesta.');
       }
 
-      // Guardar en cookie
+      // Guardar datos en cookie (válido por 1 día)
       Cookies.set('user', JSON.stringify({
         username: userData.username,
         nombreVisualizar: userData.nombreVisualizar,
-        codigoAlumno: userData.codigoAlumno
-      }), { expires: 1 }); // Cookie válida por 1 día
+        codigoAlumno: userData.codigoAlumno,
+      }), {
+        expires: 1,
+        secure: true,
+        sameSite: 'None',
+      });
 
-      navigate('/alumno/dashboard');
+      // Usar ruta relativa para navegar al dashboard
+      navigate('../dashboard');
     } catch (error) {
       console.error('Error en login:', error);
       setError(
@@ -106,8 +111,8 @@ export const LoginAlumno = () => {
         </button>
 
         <div className="extra-options">
-          <a href="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
-          <a href="/alumno/registro">¿No tienes cuenta? Regístrate</a>
+          <Link to="../recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
+          <Link to="../registro">¿No tienes cuenta? Regístrate</Link>
         </div>
       </form>
     </div>
