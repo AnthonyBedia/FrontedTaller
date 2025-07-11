@@ -1,0 +1,96 @@
+.visualizador-container {
+  padding: 2rem;
+  background-color: #F2F8FF;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.titulo-principal {
+  margin-bottom: 1rem;
+  color: black;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.autocomplete-rubrica {
+  margin-bottom: 2rem;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.rubrica-card {
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+}
+
+.rubrica-nombre {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: black;
+}
+
+.rubrica-descripcion {
+  color: gray;
+  margin-bottom: 0.5rem;
+}
+
+.rubrica-estado {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.rubrica-divider {
+  margin: 1rem 0;
+}
+
+.rubrica-componentes {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: black;
+}
+
+.criterio-box {
+  margin-bottom: 1.5rem;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.criterio-box .MuiTypography-subtitle2 {
+  color: black;
+  font-weight: 600;
+}
+
+.criterio-box .MuiTypography-caption {
+  color: #333;
+  margin-top: 0.25rem;
+}
+
+.nivel-grid {
+  margin-top: 0.5rem;
+}
+
+.nivel-card {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nivel-card .MuiTypography-body2 {
+  color: black;
+}
+
+.nivel-card .MuiTypography-caption {
+  color: #444;
+  font-size: 0.8rem;
+}
+
+.estado-activo {
+  color: #008F39;
+  font-weight: 600;
+}

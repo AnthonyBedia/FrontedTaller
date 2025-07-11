@@ -1,19 +1,45 @@
-.formula-general-container{
-    background-color: #F2F8FF;
-    margin-left: 10px;
+.main-eval-wrapper {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-bottom: 20px;
+}
+
+button:hover {
+    background-color: #0033cc;
+}
+
+.formula-general-container {
+    background-color: white;
+    padding: 20px;
     border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.formula-cards{
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
+.formula-general-container h3 {
+    color: blue;
+    margin-bottom: 16px;
+    font-size: 24px;
+    text-align: center;
 }
 
-.rubrica-cards{
+.formula-cards,
+.rubrica-cards,
+.dashboard-cards {
     display: flex;
-    gap: 16px;
+    gap: 20px;
     flex-wrap: wrap;
     justify-content: center;
 }
