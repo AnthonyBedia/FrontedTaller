@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import TablaGrupos from '../components/TablaGrupos';
 import BusquedaCursos from '../components/BusquedaCursos';
 import MenuContextual from '../components/MenuContextual';
@@ -9,6 +10,7 @@ import { grupoService } from '../services/grupoService';
 import { alumnoService } from '../services/alumnoService';
 
 const GruposCurso = () => {
+    const navigate = useNavigate();
     const { cursoSeleccionado } = useSelector(state => state.docenteCurso);
     const [alumnos, setAlumnos] = useState([]);
     const [gruposAlumnos, setGruposAlumnos] = useState({});
@@ -100,9 +102,43 @@ const GruposCurso = () => {
         });
     };
 
-    const handleOpcionMenu = (opcion) => {
+    const handleOpcionMenu = async (opcion) => {
         console.log(`Opción seleccionada: ${opcion}`, menuContextual.datos);
-        // Aquí se implementarán las acciones específicas
+        
+        if (opcion === 'verNotas') {
+            // Navegar a RegistroNotas con los datos seleccionados
+            const params = new URLSearchParams();
+            
+            if (menuContextual.tipo === 'alumno') {
+                // Navegar con alumno seleccionado
+                params.append('alumnoId', menuContextual.datos.alumno.id);
+                params.append('alumnoNombre', `${menuContextual.datos.alumno.apellidos}, ${menuContextual.datos.alumno.nombres}`);
+                params.append('alumnoCodigo', menuContextual.datos.alumno.codigo);
+                params.append('modo', 'individual');
+            } else if (menuContextual.tipo === 'grupo') {
+                // Navegar con grupo seleccionado
+                params.append('grupoId', menuContextual.datos.grupoId);
+                params.append('grupoCodigo', menuContextual.datos.codigo);
+                params.append('modo', 'grupal');
+            }
+            
+            navigate(`/docentes/registro-notas?${params.toString()}`);
+        } else if (opcion === 'eliminarGrupo') {
+            try {
+                // Confirmar antes de eliminar
+                const confirmar = window.confirm(`¿Estás seguro de que quieres eliminar el grupo ${menuContextual.datos.codigo}?`);
+                if (confirmar) {
+                    await grupoService.eliminarGrupo(menuContextual.datos.grupoId);
+                    console.log(`Grupo ${menuContextual.datos.codigo} eliminado exitosamente`);
+                    // Recargar datos después de eliminar
+                    recargarDatos();
+                }
+            } catch (error) {
+                console.error('Error eliminando grupo:', error);
+                alert(`Error eliminando grupo: ${error.message}`);
+            }
+        }
+        
         cerrarMenuContextual();
     };
 
@@ -247,6 +283,7 @@ const GruposCurso = () => {
                                     cursoSeleccionado={cursoSeleccionado}
                                     porCodigo={porCodigo}
                                     onImportacionCompletada={recargarDatos}
+                                    maxGrupo={maxAlumnosPorGrupo}
                                 />
                                 
                                 <button

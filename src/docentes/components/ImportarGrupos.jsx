@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { grupoService } from '../services/grupoService';
 import { alumnoService } from '../services/alumnoService';
 
-const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada }) => {
+const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada, maxGrupo = 5 }) => {
     const [mostrarDropImportar, setMostrarDropImportar] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -57,21 +57,8 @@ const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada 
                 return;
             }
 
-            // Determinar si el archivo tiene el nuevo formato (con fila de título)
-            let filaInicioCodigos = 0;
-            let filaInicioDatos = 1;
-            
-            // Verificar si la primera fila contiene un título (como "Grupos de...")
-            const primeraFila = jsonData[0];
-
-                // Nuevo formato: primera fila es título, segunda fila son códigos
-                filaInicioCodigos = 1;
-                filaInicioDatos = 2;
-                console.log('Detectado formato nuevo con título');
-            
-
             // Obtener la fila de códigos de grupos
-            const filaCodigos = jsonData[filaInicioCodigos];
+            const filaCodigos = jsonData[1];
             const columnasConContenido = filaCodigos
                 .map((celda, index) => ({ valor: celda, indice: index }))
                 .filter(item => item.valor && typeof item.valor === 'string' && item.valor.trim() !== '');
@@ -98,10 +85,14 @@ const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada 
 
                     // 2. Obtener los datos de la columna (excluyendo las filas de título y códigos)
                     const datosColumna = [];
-                    for (let fila = filaInicioDatos; fila < jsonData.length; fila++) {
+                    for (let fila = 2; fila < jsonData.length; fila++) {
                         const celda = jsonData[fila][indiceColumna];
-                        if (celda && typeof celda === 'string' && celda.trim() !== '') {
-                            datosColumna.push(celda.trim());
+                        if (celda) {
+                            // Convertir a string si es número y verificar que no esté vacío
+                            const valorString = String(celda).trim();
+                            if (valorString !== '') {
+                                datosColumna.push(valorString);
+                            }
                         }
                     }
 
@@ -114,7 +105,7 @@ const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada 
                             // Buscar por código
                             const codigo = contenidoCelda.trim();
                             try {
-                                const alumnocursoId = await alumnoService.buscarAlumnoPorCodigo(codigo, cursoSeleccionado.id);
+                                const alumnocursoId = await alumnoService.buscarAlumnoPorCodigoyCurso(codigo, cursoSeleccionado.id);
                                 if (alumnocursoId && alumnocursoId > 0) {
                                     alumnosEncontrados.push(alumnocursoId);
                                     console.log(`Alumno encontrado por código: ${codigo} (ID: ${alumnocursoId})`);
@@ -122,7 +113,7 @@ const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada 
                                     console.log(`Alumno no encontrado por código: ${codigo}`);
                                 }
                             } catch (error) {
-                                console.error(`Error buscando alumno por código ${codigo}:`, error);
+                                console.error(`Error buscando alumno por código ${codigo} en el curso ${cursoSeleccionado.nombreCurso}:`, error);
                             }
                         } else {
                             // Buscar por nombres y apellidos (lógica original)
@@ -147,23 +138,28 @@ const ImportarGrupos = ({ cursoSeleccionado, porCodigo, onImportacionCompletada 
                         }
                     }
 
-                    // 4. Si se encontraron alumnos, procesar el grupo
+                    // 4. Validar que el número de alumnos no exceda el máximo permitido
                     if (alumnosEncontrados.length > 0) {
-                        console.log(`${alumnosEncontrados.length} alumnos encontrados para el grupo ${codigoGrupo}`);
+                        if (alumnosEncontrados.length <= maxGrupo) {
+                            console.log(`${alumnosEncontrados.length} alumnos encontrados para el grupo ${codigoGrupo} (máximo: ${maxGrupo})`);
 
-                        try {
-                            // 5. Vaciar el grupo
-                            await grupoService.vaciarGrupo(grupo.id, cursoSeleccionado.id);
-                            console.log(`Grupo ${codigoGrupo} vaciado`);
+                            try {
+                                // 5. Vaciar el grupo
+                                await grupoService.vaciarGrupo(grupo.id, cursoSeleccionado.id);
+                                console.log(`Grupo ${codigoGrupo} vaciado para el curso ${cursoSeleccionado.nombreCurso}`);
 
-                            // 6. Agregar los alumnos encontrados al grupo
-                            await grupoService.agregarAlumnosAGrupo(alumnosEncontrados, grupo.id);
-                            console.log(`${alumnosEncontrados.length} alumnos agregados al grupo ${codigoGrupo}`);
+                                // 6. Agregar los alumnos encontrados al grupo
+                                await grupoService.agregarAlumnosAGrupo(alumnosEncontrados, grupo.id);
+                                console.log(`${alumnosEncontrados.length} alumnos agregados al grupo ${codigoGrupo}`);
 
-                        } catch (error) {
-                            console.error(`Error procesando grupo ${codigoGrupo}:`, error);
-                            console.error('Detalles del error:', error.response?.data || error.message);
-                            alert(`Error procesando grupo ${codigoGrupo}: ${error.message}`);
+                            } catch (error) {
+                                console.error(`Error procesando grupo ${codigoGrupo}:`, error);
+                                console.error('Detalles del error:', error.response?.data || error.message);
+                                alert(`Error procesando grupo ${codigoGrupo}: ${error.message}`);
+                            }
+                        } else {
+                            console.log(`Grupo ${codigoGrupo} tiene ${alumnosEncontrados.length} alumnos, excede el máximo de ${maxGrupo}`);
+                            alert(`El grupo ${codigoGrupo} tiene ${alumnosEncontrados.length} alumnos, excede el máximo permitido de ${maxGrupo}`);
                         }
                     } else {
                         console.log(`No se encontraron alumnos válidos para el grupo ${codigoGrupo}`);
