@@ -33,7 +33,8 @@ export const DashboardLayout = () => {
       id: 'evaluaciones',
       title: '📊 Evaluaciones',
       items: [
-        { id: 'componente', label: 'Componentes y Pesos' },
+        { id: 'componente', label: 'Componentes y Competencias' },
+        { id: 'componentes', label: 'Crear Componentes' },
         { id: 'formulas', label: 'Fórmulas de Evaluación' },
         { id: 'crearrubrica', label: 'Crear rúbricas' },
         { id: 'visualizarrubrica', label: 'Ver rúbricas' },
