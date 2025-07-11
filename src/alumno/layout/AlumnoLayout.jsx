@@ -17,7 +17,7 @@ export const AlumnoLayout = () => {
           <li onClick={() => navigate('/alumno/MisCursos')}>Mis Cursos 🌱</li>
           <li onClick={() => navigate('/alumno/calificaciones')}>Calificaciones 📝</li>
           <li onClick={() => navigate('/alumno/horarios')}>Horarios📅 </li>
-          <li onClick={() => navigate('/alumno/perfil')}>Perfil📊</li>
+          <li onClick={() => navigate('/alumno/Personalizacion')}>Perfil📊</li>
         </ul>
 
       </nav>
