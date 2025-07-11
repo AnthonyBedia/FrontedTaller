@@ -18,7 +18,7 @@ export const LoginAlumno = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${urlBack}api-alumno/v1/auth/login`, {
+      const response = await fetch(urlBack+`api-alumno/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
