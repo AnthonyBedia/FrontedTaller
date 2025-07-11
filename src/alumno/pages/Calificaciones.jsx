@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import './Calificaciones.css';
-const urlBack = import.meta.env.VITE_APP_BACKEND_ALUMNO_URL;
 
 export const Calificaciones = () => {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ export const Calificaciones = () => {
 
   useEffect(() => {
     if (codigoAlumno) {
-      fetch(urlBack+`api-alumno/v1/notas/${codigoAlumno}`)
+      fetch(`https://modulo-alumno-abgwebgxfsdma0fp.canadacentral-01.azurewebsites.net/api-alumno/v1/notas/${codigoAlumno}`)
         .then((res) => res.json())
         .then((data) => {
           setNotas(data);
