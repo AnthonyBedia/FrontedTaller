@@ -47,9 +47,9 @@ export const AlumnoDashboard = () => {
       color: 'bg-orange-500'
     },
     {
-      title: 'Perfil',
+      title: 'Personalizacion',
       description: 'Editar información personal',
-      path: '../perfil', // Ruta relativa (necesitarás crear esta ruta)
+      path: '../Personalizacion', // Ruta relativa (necesitarás crear esta ruta)
       icon: '👤',
       color: 'bg-orange-500',
     },
