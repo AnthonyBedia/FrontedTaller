@@ -86,6 +86,12 @@ export const grupoService = {
             console.error('Error obteniendo promedio del grupo:', error);
             return null;
         }
+    },
+
+    // Obtener cantidad de alumnos de un grupo
+    countAlumnos: async (grupoId, cusrsoId) => {
+        const { data } = await axios.get(`${baseUrl}api/grupos/countalumnos/${grupoId}/${cusrsoId}`);
+        return data;
     }
     
 

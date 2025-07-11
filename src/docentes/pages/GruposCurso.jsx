@@ -345,6 +345,9 @@ const GruposCurso = () => {
                         gruposInfo={gruposInfo}
                         grupoSeleccionado={grupoSeleccionado}
                         handleContextMenu={handleContextMenu}
+                        cursoSeleccionado={cursoSeleccionado}
+                        onDatosActualizados={recargarDatos}
+                        maxAlumnosPorGrupo={maxAlumnosPorGrupo}
                     />
                 </div>
             </div>

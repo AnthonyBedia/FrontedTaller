@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 import { grupoService } from '../services/grupoService';
+import { alumnoService } from '../services/alumnoService';
 
 const TablaGrupos = ({ 
     alumnos, 
     gruposAlumnos, 
     gruposInfo, 
     grupoSeleccionado, 
-    handleContextMenu 
+    handleContextMenu,
+    cursoSeleccionado,
+    onDatosActualizados,
+    maxAlumnosPorGrupo = 5
 }) => {
     const [dragData, setDragData] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [draggedAlumnoId, setDraggedAlumnoId] = useState(null);
+    const [grupoLleno, setGrupoLleno] = useState(false);
 
     const handleMouseDown = (e, alumno) => {
         console.log('Mouse down en alumno:', alumno);
-        setDragData({ alumno, startX: e.clientX, startY: e.clientY });
+        const dragDataObj = { alumno, startX: e.clientX, startY: e.clientY };
+        console.log('dragData creado:', dragDataObj);
+        setDragData(dragDataObj);
         setDraggedAlumnoId(alumno.id);
         setIsDragging(false);
     };
@@ -35,7 +42,10 @@ const TablaGrupos = ({
         }
     };
 
-    const handleMouseUp = (e) => {
+    const handleMouseUp = async (e) => {
+        console.log('Mouse up - dragData:', dragData);
+        console.log('Mouse up - isDragging:', isDragging);
+        
         if (dragData && isDragging) {
             const target = e.target.closest('td');
             console.log('Target encontrado:', target);
@@ -44,18 +54,42 @@ const TablaGrupos = ({
                 const grupoId = target.getAttribute('data-grupo-id');
                 console.log('Grupo objetivo:', grupoId);
                 
-                // Actualizar dragData con el grupo objetivo
-                setDragData(prev => ({
-                    ...prev,
-                    targetGrupo: grupoId
-                }));
-                
-                // Mostrar modal de confirmación
-                setModalPosition({ x: e.clientX, y: e.clientY });
-                setShowModal(true);
+                // Verificar si el grupo está lleno antes de permitir el arrastre
+                try {
+                    const cantidadAlumnos = await grupoService.countAlumnos(grupoId, cursoSeleccionado.id);
+                    console.log(`Grupo ${grupoId} tiene ${cantidadAlumnos} alumnos, máximo: ${maxAlumnosPorGrupo}`);
+                    
+                    if (cantidadAlumnos >= maxAlumnosPorGrupo) {
+                        console.log('Grupo lleno, no se puede agregar más alumnos');
+                        setGrupoLleno(true);
+                        setDragData({
+                            ...dragData,
+                            targetGrupo: grupoId
+                        });
+                        setModalPosition({ x: e.clientX, y: e.clientY });
+                        setShowModal(true);
+                    } else {
+                        console.log('Grupo disponible para agregar alumno');
+                        setGrupoLleno(false);
+                        
+                        // Actualizar dragData con el grupo objetivo
+                        const updatedDragData = {
+                            ...dragData,
+                            targetGrupo: grupoId
+                        };
+                        console.log('updatedDragData:', updatedDragData);
+                        setDragData(updatedDragData);
+                        
+                        // Mostrar modal de confirmación
+                        setModalPosition({ x: e.clientX, y: e.clientY });
+                        setShowModal(true);
+                    }
+                } catch (error) {
+                    console.error('Error verificando cantidad de alumnos:', error);
+                    alert('Error verificando el estado del grupo');
+                }
             }
         }
-        setDragData(null);
         setIsDragging(false);
         setDraggedAlumnoId(null);
         // Restaurar el cursor
@@ -63,28 +97,55 @@ const TablaGrupos = ({
     };
 
     const handleConfirmarCambio = async () => {
+        // Si el grupo está lleno, solo cerrar el modal
+        if (grupoLleno) {
+            setShowModal(false);
+            setDragData(null);
+            setGrupoLleno(false);
+            return;
+        }
+
         try {
             console.log('Confirmando cambio de grupo...');
             console.log('Alumno:', dragData?.alumno);
             console.log('Grupo objetivo:', dragData?.targetGrupo);
             
-            if (dragData?.alumno && dragData?.targetGrupo) {
-                // Llamar al servicio para agregar alumno al grupo
-                await grupoService.agregarAlumnosAGrupo([dragData.alumno.id], dragData.targetGrupo);
-                console.log('Alumno agregado al grupo exitosamente');
-                // Aquí podrías recargar los datos o actualizar el estado
+            if (dragData?.alumno && dragData?.targetGrupo && cursoSeleccionado) {
+                // Buscar el alumnocursoId usando el código del alumno y el curso
+                const alumnocursoId = await alumnoService.buscarAlumnoPorCodigoyCurso(dragData.alumno.codigo, cursoSeleccionado.id);
+                
+                if (alumnocursoId && alumnocursoId > 0) {
+                    // Llamar al servicio para agregar alumno al grupo
+                    await grupoService.agregarAlumnosAGrupo([alumnocursoId], dragData.targetGrupo);
+                    console.log('Alumno agregado al grupo exitosamente');
+                    
+                    // Notificar que los datos se han actualizado
+                    if (onDatosActualizados) {
+                        onDatosActualizados();
+                    }
+                } else {
+                    console.error('No se encontró el alumnocursoId');
+                    alert('Error: No se pudo encontrar el alumno en el curso');
+                }
+            } else {
+                console.error('Datos faltantes para el cambio de grupo');
+                console.log('dragData:', dragData);
+                console.log('cursoSeleccionado:', cursoSeleccionado);
             }
         } catch (error) {
             console.error('Error al cambiar grupo:', error);
+            alert(`Error al cambiar grupo: ${error.message}`);
         }
         setShowModal(false);
         setDragData(null);
+        setGrupoLleno(false);
     };
 
     const handleCancelarCambio = () => {
         console.log('Cancelando cambio de grupo');
         setShowModal(false);
         setDragData(null);
+        setGrupoLleno(false);
     };
 
     const renderGruposTable = () => {
@@ -341,14 +402,17 @@ const TablaGrupos = ({
                             marginBottom: '15px',
                             fontSize: '1.2rem'
                         }}>
-                            Confirmar cambio de grupo
+                            {grupoLleno ? 'Grupo lleno' : 'Confirmar cambio de grupo'}
                         </h3>
                         <p style={{
                             color: '#6c757d',
                             marginBottom: '20px',
                             fontSize: '1rem'
                         }}>
-                            ¿Estás seguro de que quieres hacer el cambio de grupo?
+                            {grupoLleno 
+                                ? 'Este grupo ya está lleno' 
+                                : '¿Estás seguro de que quieres hacer el cambio de grupo?'
+                            }
                         </p>
                         <div style={{
                             display: 'flex',
@@ -377,15 +441,15 @@ const TablaGrupos = ({
                                     padding: '8px 16px',
                                     border: 'none',
                                     borderRadius: '4px',
-                                    backgroundColor: '#dc3545',
+                                    backgroundColor: grupoLleno ? '#6c757d' : '#dc3545',
                                     color: 'white',
                                     cursor: 'pointer',
                                     fontSize: '0.9rem'
                                 }}
-                                onMouseOver={(e) => e.target.style.backgroundColor = '#c82333'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
+                                onMouseOver={(e) => e.target.style.backgroundColor = grupoLleno ? '#5a6268' : '#c82333'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = grupoLleno ? '#6c757d' : '#dc3545'}
                             >
-                                Sí
+                                {grupoLleno ? 'Entendido' : 'Sí'}
                             </button>
                         </div>
                     </div>
