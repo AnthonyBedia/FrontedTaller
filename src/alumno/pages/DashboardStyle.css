@@ -74,7 +74,7 @@
 
 .sidebar {
   width: 250px;
-  background-color: #3366ff;
+  background-color: #0d1f63;
   color: white;
   padding: 1rem;
 }
@@ -123,7 +123,7 @@
 }
 
 .page-content {
-  background: white;
+  background: #f0f7ff;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
