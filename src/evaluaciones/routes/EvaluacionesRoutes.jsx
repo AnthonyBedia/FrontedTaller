@@ -26,7 +26,7 @@ export const EvaluacionesRoutes = () => {
       <Route path="componentes" element={<ComponentePage />} /> 
       <Route path="/" element={<MainEval/>}/>
       <Route path="crearrubrica" element={<CrearRubrica/>}/>
-      <Route path="/visualizarrubrica" element={<VerRubrica/>}/>
+      <Route path="visualizarrubrica" element={<VerRubrica/>}/>
       <Route path="arboldashboard" element={<ArbolCompetenciaPage />} />
     </Routes>
   );
