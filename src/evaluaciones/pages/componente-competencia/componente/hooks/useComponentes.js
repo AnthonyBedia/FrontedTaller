@@ -32,7 +32,7 @@ export const useComponentes = () => {
   const cargarCompetenciasAsociadas = async (componenteId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/componente-competencia-con-competencias/${componenteId}`,
+        `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia-con-competencias/${componenteId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -58,7 +58,7 @@ export const useComponentes = () => {
       // Obtener componentes con peso
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:8080/api/componentes-con-peso",
+        "https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes-con-peso",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -76,7 +76,7 @@ export const useComponentes = () => {
         componentesData.map(async (componente) => {
           try {
             const competenciasResponse = await fetch(
-              `http://localhost:8080/api/componente-competencia-con-competencias/${componente.id}`,
+              `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia-con-competencias/${componente.id}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -126,7 +126,7 @@ export const useComponentes = () => {
 
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:8080/api/componente/${editingComponente.id}`,
+          `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente/${editingComponente.id}`,
           {
             method: "PUT",
             headers: {
@@ -227,7 +227,7 @@ export const useComponentes = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8080/api/componente-competencia/by-componente/${idComponente}`,
+        `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia/by-componente/${idComponente}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -267,7 +267,7 @@ export const useComponentes = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:8080/api/componente-competencia/guardar-cambios",
+        "https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia/guardar-cambios",
         {
           method: "POST",
           headers: {

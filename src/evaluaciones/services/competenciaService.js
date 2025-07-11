@@ -2,7 +2,7 @@ export const competenciaService = {
   // Obtener todas las competencias
   getCompetencias: async () => {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:8080/api/competencias", {
+    const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
@@ -13,7 +13,7 @@ export const competenciaService = {
   getCompetenciaById: async (id) => {
     const token = localStorage.getItem("token");
     const response = await fetch(
-      `http://localhost:8080/api/competencias/${id}`,
+      `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const data = await response.json();
@@ -24,7 +24,7 @@ export const competenciaService = {
   asociarCompetencia: async (competenciaId, componenteId) => {
     const token = localStorage.getItem("token");
     const response = await fetch(
-      "http://localhost:8080/api/competencias/asociar",
+      "https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias/asociar",
       {
         method: "POST",
         headers: {
@@ -45,7 +45,7 @@ export const competenciaService = {
   desasociarCompetencia: async (competenciaId, componenteId) => {
     const token = localStorage.getItem("token");
     const response = await fetch(
-      `http://localhost:8080/api/competencias/asociar/${competenciaId}/${componenteId}`,
+      `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias/asociar/${competenciaId}/${componenteId}`,
       {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +60,7 @@ export const competenciaService = {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `http://localhost:8080/api/componente-competencia-con-competencias/${componenteId}`,
+        `https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente-competencia-con-competencias/${componenteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (!response.ok) {

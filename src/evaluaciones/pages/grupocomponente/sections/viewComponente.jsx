@@ -35,7 +35,7 @@ export default function ComponenteViewer({ show, handleClose, componente }) {
 
     const handleSave = () => {
         axios
-            .put(`http://localhost:8080/api/componente/${editableComponente.id}`, editableComponente)
+            .put(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente/${editableComponente.id}`, editableComponente)
             .then(() => {
                 setIsEditing(false);
                 handleClose();

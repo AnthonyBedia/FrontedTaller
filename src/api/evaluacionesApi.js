@@ -1,5 +1,5 @@
 export async function obtenerToken(credentials) {
-  const response = await fetch("http://localhost:8080/api/token", {
+  const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/token", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),

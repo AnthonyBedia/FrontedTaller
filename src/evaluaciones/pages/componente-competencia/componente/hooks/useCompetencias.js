@@ -9,7 +9,7 @@ export const useCompetencias = () => {
   const cargarCompetencias = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8080/api/competencias", {
+      const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

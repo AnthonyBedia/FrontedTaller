@@ -42,7 +42,7 @@ export default function GrupoComponentes() {
     }, []);
 
     const fetchComponentes = () => {
-        axios.get("http://localhost:8080/api/componente")
+        axios.get("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente")
             .then(res => setComponentes(res.data))
             .catch(err => console.error("Error al obtener componentes:", err));
     };
@@ -53,7 +53,7 @@ export default function GrupoComponentes() {
     };
 
     const handleSave = () => {
-        axios.post("http://localhost:8080/api/componente", newComponente)
+        axios.post("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componente", newComponente)
             .then(() => {
                 setShowAddModal(false);
                 setNewComponente({

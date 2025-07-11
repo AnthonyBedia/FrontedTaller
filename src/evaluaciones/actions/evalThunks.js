@@ -11,7 +11,7 @@ export const getFormulas = () => {
         const token= localStorage.getItem("token")
         console.log("TOKEN actual: ", token)
         dispatch( iniciaCargaFormulas() );
-        const resp = await fetch(`http://localhost:8080/api/formula`, {
+        const resp = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -29,7 +29,7 @@ export const postFormula = (nuevaFormula) => {
     return async (dispatch, getState) => {
         try {
             const token= localStorage.getItem("token")
-            const response = await fetch("http://localhost:8080/api/formula", {
+            const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export const deleteFormula = (id) => {
     return async (dispatch, getState) => {
         try {
             const token= localStorage.getItem("token")
-            const response = await fetch(`http://localhost:8080/api/formula/${id}`, {
+            const response = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -79,7 +79,7 @@ export const updateFormula = (formulaActualizada) => {
     return async (dispatch, getState) => {
         try {
             const token= localStorage.getItem("token")
-            const response = await fetch(`http://localhost:8080/api/formula/${formulaActualizada.id}`, {
+            const response = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/formula/${formulaActualizada.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -110,7 +110,7 @@ export const getFunciones = () => {
         const token= localStorage.getItem("token")
         dispatch( iniciaCargaFunciones() );
         
-        const resp = await fetch(`http://localhost:8080/api/funcion`, {
+        const resp = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/funcion`, {
             method: "GET",
             headers:{
                 "Content-Type": "application/json",
@@ -130,7 +130,7 @@ export const postRubrica = (rubricaData) => {
             const token= localStorage.getItem("token")
             dispatch(iniciaGuardadoRubrica());
 
-            const response = await fetch("http://localhost:8080/api/rubricas", {
+            const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/rubricas", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -155,7 +155,7 @@ export const getComponentes = () => {
     const token = localStorage.getItem("token");
     dispatch(iniciaCargaComponentes());
     try {
-      const resp = await fetch("http://localhost:8080/api/componentes", {
+      const resp = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -171,7 +171,7 @@ export const getComponentes = () => {
 export const updateComponente = (componente) => {
   return async () => {
     const token = localStorage.getItem("token");
-    await fetch(`http://localhost:8080/api/componentes/${componente.id}`, {
+    await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes/${componente.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -185,7 +185,7 @@ export const updateComponente = (componente) => {
 export const postComponente = (nuevoComponente) => {
   return async () => {
     const token = localStorage.getItem("token");
-    await fetch("http://localhost:8080/api/componentes", {
+    await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/componentes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -203,7 +203,7 @@ export const getArbol = () => {
         const token= localStorage.getItem("token")
         console.log("TOKEN actual: ", token)
         dispatch( iniciaCargaArbol() );
-        const resp = await fetch(`http://localhost:8080/api/competencias/{competenciaId}/arbol-componentes`, {
+        const resp = await fetch(`https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/competencias/{competenciaId}/arbol-componentes`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -222,7 +222,7 @@ export const getRubricas = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:8080/api/rubricas", {
+      const response = await fetch("https://modeval-ejc7cfajc2hqgkfb.canadacentral-01.azurewebsites.net/api/rubricas", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
